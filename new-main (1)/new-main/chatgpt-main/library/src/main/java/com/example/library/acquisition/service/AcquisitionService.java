@@ -61,10 +61,10 @@ public class AcquisitionService {
     }
 
     public void addOrder(String title, String author, String isbn, String publisher, String docType, String orderer,
-                         String orderDate, Integer quantity, Double unitPrice) {
+                         Integer quantity, Double unitPrice) {
         validateIsbn(isbn);
         String orderId = generateOrderId();
-        Date date = Date.valueOf(orderDate);
+        Date date = Date.valueOf(LocalDate.now());
         AcquisitionOrder order = new AcquisitionOrder(orderId, date, orderer, title, author, isbn, publisher, docType, unitPrice,
                 quantity, STATUS_PENDING);
         acquisitionOrderRepository.save(order);
@@ -75,20 +75,20 @@ public class AcquisitionService {
                 .orElseThrow(() -> new IllegalArgumentException("未找到订单信息"));
     }
 
-    public void updateOrder(String orderId, String orderer, String orderDate, Integer quantity, Double unitPrice) {
+    public void updateOrder(String orderId, String orderer, Integer quantity, Double unitPrice) {
         AcquisitionOrder order = getOrder(orderId);
         if (!STATUS_PENDING.equals(order.getStatus())) {
             throw new IllegalArgumentException("已验收订单无法修改");
         }
         order.setOrderer(orderer);
-        order.setOrderDate(Date.valueOf(orderDate));
+        order.setOrderDate(Date.valueOf(LocalDate.now()));
         order.setQuantity(quantity);
         order.setUnitPrice(unitPrice);
         acquisitionOrderRepository.save(order);
     }
 
     @Transactional
-    public void addAcceptanceRecord(String orderId, String checker, String acceptanceDate, Integer receivedQuantity, String status) {
+    public void addAcceptanceRecord(String orderId, String checker, Integer receivedQuantity, String status) {
         AcquisitionOrder order = getOrder(orderId);
         validateIsbn(order.getIsbn());
         if (receivedQuantity > order.getQuantity()) {

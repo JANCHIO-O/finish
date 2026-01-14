@@ -21,19 +21,19 @@ public class CatalogDamageController {
     @GetMapping("/catalog/damage/request")
     public String damageRequestPage(Model model) {
         model.addAttribute("circulationList", catalogService.listCirculationBooks());
+        model.addAttribute("today", LocalDate.now());
         return "catalog/catalog-damage-request";
     }
 
     @PostMapping("/catalog/damage/request/submit")
     public String submitDamageRequest(@RequestParam String isbn,
                                       @RequestParam String damageReason,
-                                      @RequestParam String applicant,
-                                      @RequestParam String damageDate) {
+                                      @RequestParam String applicant) {
         catalogService.submitDamageRequest(
                 isbn,
                 damageReason,
                 applicant,
-                LocalDate.parse(damageDate)
+                LocalDate.now()
         );
         return "redirect:/catalog/damage/request";
     }

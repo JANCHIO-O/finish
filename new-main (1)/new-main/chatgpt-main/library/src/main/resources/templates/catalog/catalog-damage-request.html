@@ -28,7 +28,7 @@
     </div>
     <div>
         <label>报损日期：</label>
-        <input type="date" name="damageDate" required>
+        <input type="date" name="damageDate" th:value="${today}" readonly required>
     </div>
     <button type="submit">提交申请</button>
 </form>

@@ -16,7 +16,7 @@
     <p>出版社：<input type="text" name="publisher" th:value="${prefillPublisher}" required></p>
     <p>订购数量：<input type="number" name="quantity" required></p>
     <p>单价：<input type="number" step="0.01" name="unitPrice" required></p>
-    <p>订购日期：<input type="date" name="orderDate" required></p>
+    <p>订购日期：<input type="date" name="orderDate" th:value="${today}" readonly required></p>
     <button type="submit">提交订购</button>
 </form>
 

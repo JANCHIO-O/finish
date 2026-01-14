@@ -15,7 +15,7 @@
     <p>ISSN：<input type="text" name="issn" pattern="\d{8}" th:value="${prefillIssn}" required></p>
     <p>出版社：<input type="text" name="publisher" th:value="${prefillPublisher}" required></p>
     <p>装订人员：<input type="text" name="binder" required></p>
-    <p>装订日期：<input type="date" name="bindDate" required></p>
+    <p>装订日期：<input type="date" name="bindDate" th:value="${today}" readonly required></p>
     <p>馆藏位置：<input type="text" name="shelfLocation" required></p>
     <button type="submit">装订入库</button>
 </form>

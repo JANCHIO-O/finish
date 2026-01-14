@@ -23,7 +23,7 @@
     <p>出版社：<input type="text" name="publisher" required></p>
     <p>文献类型：<input type="text" name="docType" required></p>
     <p>验收人：<input type="text" name="checker" required></p>
-    <p>出版日期：<input type="date" name="publishDate" required></p>
+    <p>出版日期：<input type="date" name="publishDate" th:value="${today}" readonly required></p>
     <button type="submit">添加</button>
 </form>
 

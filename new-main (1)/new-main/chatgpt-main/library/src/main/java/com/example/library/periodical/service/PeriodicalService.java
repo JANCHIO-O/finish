@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -69,24 +70,24 @@ public class PeriodicalService {
         return catalogEntryRepository.findAll();
     }
 
-    public void addVisitRecord(String title, String issn, String publisher, String recommender, String recommendDate, String reason) {
+    public void addVisitRecord(String title, String issn, String publisher, String recommender, String reason) {
         String visitId = generateVisitId();
         validateIssn(issn);
-        Date date = Date.valueOf(recommendDate);
+        Date date = Date.valueOf(LocalDate.now());
         PeriodicalVisitRecord record = new PeriodicalVisitRecord(visitId, title, issn, publisher, recommender, date, reason);
         visitRecordRepository.save(record);
     }
 
-    public void addOrder(String title, String issn, String publisher, Integer quantity, Double unitPrice, String orderDate) {
+    public void addOrder(String title, String issn, String publisher, Integer quantity, Double unitPrice) {
         String orderId = generateOrderId();
         validateIssn(issn);
-        Date date = Date.valueOf(orderDate);
+        Date date = Date.valueOf(LocalDate.now());
         PeriodicalOrder order = new PeriodicalOrder(orderId, title, issn, publisher, quantity, unitPrice, date, "已下单");
         orderRepository.save(order);
     }
 
     @Transactional
-    public void addAcceptanceRecord(String orderId, String title, String issn, String publisher, Integer receivedQuantity, String checker, String acceptanceDate, String status) {
+    public void addAcceptanceRecord(String orderId, String title, String issn, String publisher, Integer receivedQuantity, String checker, String status) {
         validateIssn(issn);
         PeriodicalOrder order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("未找到订购记录"));
@@ -97,7 +98,7 @@ public class PeriodicalService {
             throw new IllegalArgumentException("到馆数量不能大于订购数量");
         }
         String acceptanceId = generateAcceptanceId();
-        Date date = Date.valueOf(acceptanceDate);
+        Date date = Date.valueOf(LocalDate.now());
         PeriodicalAcceptanceRecord record = new PeriodicalAcceptanceRecord(acceptanceId, title, issn, publisher, receivedQuantity, checker, date, status);
         if ("验收成功".equals(status)) {
             acceptanceRecordRepository.save(record);
@@ -111,10 +112,10 @@ public class PeriodicalService {
     }
 
     @Transactional
-    public void addBindingRecordAndCatalog(String title, String issn, String publisher, String binder, String bindDate, String shelfLocation) {
+    public void addBindingRecordAndCatalog(String title, String issn, String publisher, String binder, String shelfLocation) {
         String bindId = generateBindId();
         validateIssn(issn);
-        Date date = Date.valueOf(bindDate);
+        Date date = Date.valueOf(LocalDate.now());
         PeriodicalBindingRecord record = new PeriodicalBindingRecord(bindId, title, issn, publisher, binder, date, shelfLocation);
         bindingRecordRepository.save(record);
 

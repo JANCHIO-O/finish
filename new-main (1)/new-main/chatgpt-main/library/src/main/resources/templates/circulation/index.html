@@ -3,11 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>流通子系统-首页</title>
-    <style>body{margin: 50px;font-size:16px;} ul{list-style: none;padding:0;} li{margin:12px 0;} a{text-decoration:none;color:#0066cc;font-size:17px;} a:hover{color:red;text-decoration:underline;}</style>
+    <style>
+        body{margin: 50px;font-size:16px;}
+        ul{list-style: none;padding:0;}
+        li{margin:12px 0;}
+        a{text-decoration:none;color:#0066cc;font-size:17px;}
+        a:hover{color:red;text-decoration:underline;}
+        .notice-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:1000;}
+        .notice-popup{background:#fff;border-radius:8px;padding:20px;max-width:520px;width:90%;box-shadow:0 6px 18px rgba(0,0,0,0.2);}
+        .notice-popup h3{margin-top:0;}
+        .notice-popup button{margin-top:12px;}
+    </style>
 </head>
 <body>
 <h2> 图书流通子系统</h2>
 <hr>
+<div class="notice-overlay" th:if="${showNoticePopup}" id="noticePopup">
+    <div class="notice-popup">
+        <h3>系统公告</h3>
+        <div th:each="notice:${notices}" style="background:#f8f9fa;padding:8px;margin:8px 0;border-radius:5px;">
+            <p th:text="${notice.noticeTitle}" style="font-weight:bold;margin:0;"></p>
+            <p th:text="${notice.noticeContent}" style="margin:5px 0;"></p>
+        </div>
+        <button type="button" onclick="document.getElementById('noticePopup').style.display='none'">我知道了</button>
+    </div>
+</div>
 <div th:if="${notices != null and notices.size()>0}">
     <h4> 系统公告</h4>
     <div th:each="notice:${notices}" style="background:#f8f9fa;padding:8px;margin:8px 0;border-radius:5px;">

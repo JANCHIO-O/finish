@@ -95,15 +95,26 @@ public class CirculationController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("circulationAccountId");
+        session.removeAttribute("circulationNoticePopupShown");
         return "redirect:/circulation/login";
     }
 
     // 流通子系统首页 - 匹配前端：/circulation
     @GetMapping("")
-    public String index(Model model) {
+    public String index(HttpSession session, Model model) {
         // 查询系统公告展示在首页
         List<NoticeDto> notices = circulationService.getAllNotices();
         model.addAttribute("notices", notices);
+        boolean hasNotices = notices != null && !notices.isEmpty();
+        boolean showPopup = false;
+        if (hasNotices) {
+            Boolean popupShown = (Boolean) session.getAttribute("circulationNoticePopupShown");
+            if (popupShown == null || !popupShown) {
+                showPopup = true;
+                session.setAttribute("circulationNoticePopupShown", true);
+            }
+        }
+        model.addAttribute("showNoticePopup", showPopup);
         return "circulation/index";
     }
 

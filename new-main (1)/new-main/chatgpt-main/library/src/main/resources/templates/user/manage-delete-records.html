@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>账号删除记录</title>
+</head>
+<body>
+<h2>账号删除记录</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>账号</th>
+        <th>角色</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>手机号</th>
+        <th>删除时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${deleteRecords == null || deleteRecords.isEmpty()}">
+        <td colspan="6">暂无删除记录。</td>
+    </tr>
+    <tr th:each="record : ${deleteRecords}">
+        <td th:text="${record.accountId}"></td>
+        <td th:text="${record.role}"></td>
+        <td th:text="${record.name}"></td>
+        <td th:text="${record.gender}"></td>
+        <td th:text="${record.mobile}"></td>
+        <td th:text="${#temporals.format(record.deletedAt, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    <a th:href="@{/user/manage}">返回用户管理</a>
+</p>
+</body>
+</html>

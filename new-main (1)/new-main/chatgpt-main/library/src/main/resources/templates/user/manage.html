@@ -31,22 +31,37 @@
 </table>
 
 <h3>账号删除</h3>
-<form th:action="@{/user/manage/delete}" method="post">
+<form th:action="@{/user/manage}" method="get">
     <label>
         账号类型：
         <select name="role" required>
-            <option value="TEACHER">教师账号</option>
-            <option value="STUDENT">学生账号</option>
+            <option value="">请选择</option>
+            <option value="TEACHER" th:selected="${selectedRole == 'TEACHER'}">教师账号</option>
+            <option value="STUDENT" th:selected="${selectedRole == 'STUDENT'}">学生账号</option>
         </select>
     </label>
-    <br>
-    <label>
-        工号/借书证号：
-        <input type="text" name="accountId" required>
-    </label>
-    <br>
-    <button type="submit">删除账号</button>
+    <button type="submit">筛选</button>
 </form>
+<form th:action="@{/user/manage/delete}" method="post">
+    <input type="hidden" name="role" th:value="${selectedRole}">
+    <label>
+        对应账号：
+        <select name="accountId" th:disabled="${selectedRole == null || selectedRole.isBlank()}" required>
+            <option value="">请选择账号</option>
+            <option th:each="account : ${filteredAccounts}"
+                    th:value="${account.accountId}"
+                    th:text="${readerNameMap[account.accountId] != null ? account.accountId + ' - ' + readerNameMap[account.accountId] : account.accountId}">
+            </option>
+        </select>
+    </label>
+    <button type="submit" th:disabled="${selectedRole == null || selectedRole.isBlank()}">删除账号</button>
+</form>
+<p th:if="${selectedRole != null && selectedRole != '' && (filteredAccounts == null || filteredAccounts.isEmpty())}">
+    当前类型下暂无可删除账号。
+</p>
+
+<h3>账号删除记录</h3>
+<a th:href="@{/user/manage/delete-records}">查看账号删除记录</a>
 
 <p>
     <a th:href="@{/user/manage/logout}">退出登录</a>

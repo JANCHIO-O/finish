@@ -33,19 +33,65 @@ import com.example.library.circulation.dto.BorrowRecordDto;
 import com.example.library.circulation.dto.CirculationBookDto;
 import com.example.library.circulation.dto.NoticeDto;
 import com.example.library.circulation.service.CirculationService;
+import com.example.library.common.entity.UserAccount;
+import com.example.library.common.repository.UserAccountRepository;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/circulation")
 public class CirculationController {
-    @Autowired
-    private CirculationService circulationService;
+    private final CirculationService circulationService;
+    private final UserAccountRepository userAccountRepository;
+
+    public CirculationController(CirculationService circulationService,
+                                 UserAccountRepository userAccountRepository) {
+        this.circulationService = circulationService;
+        this.userAccountRepository = userAccountRepository;
+    }
+
+    @GetMapping("/login")
+    public String login(@RequestParam(required = false) String target, Model model) {
+        model.addAttribute("target", target);
+        return "circulation/login";
+    }
+
+    @PostMapping("/login")
+    public String loginSubmit(@RequestParam String accountId,
+                              @RequestParam String password,
+                              @RequestParam(required = false) String target,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes) {
+        Optional<UserAccount> account = userAccountRepository.findByAccountIdAndRole(accountId, "STUDENT");
+        if (account.isPresent() && account.get().getPassword().equals(password)) {
+            session.setAttribute("circulationAccountId", accountId);
+            redirectAttributes.addFlashAttribute("message", "登录成功，欢迎进入流通管理子系统。");
+            if (target != null && !target.isBlank()) {
+                return "redirect:" + target;
+            }
+            return "redirect:/circulation";
+        }
+        redirectAttributes.addFlashAttribute("message", "账号或密码错误，仅学生账号可登录。");
+        if (target != null && !target.isBlank()) {
+            return "redirect:/circulation/login?target="
+                    + URLEncoder.encode(target, StandardCharsets.UTF_8);
+        }
+        return "redirect:/circulation/login";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("circulationAccountId");
+        return "redirect:/circulation/login";
+    }
 
     // 流通子系统首页 - 匹配前端：/circulation
     @GetMapping("")

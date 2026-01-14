@@ -55,6 +55,7 @@ public class AcquisitionController {
         model.addAttribute("prefillIsbn", isbn);
         model.addAttribute("prefillPublisher", publisher);
         model.addAttribute("prefillDocType", docType);
+        model.addAttribute("today", LocalDate.now());
         return "acquisition/order";
     }
 
@@ -65,10 +66,9 @@ public class AcquisitionController {
                            @RequestParam String publisher,
                            @RequestParam String docType,
                            @RequestParam String orderer,
-                           @RequestParam String orderDate,
                            @RequestParam Integer quantity,
                            @RequestParam Double unitPrice) {
-        acquisitionService.addOrder(title, author, isbn, publisher, docType, orderer, orderDate, quantity, unitPrice);
+        acquisitionService.addOrder(title, author, isbn, publisher, docType, orderer, quantity, unitPrice);
         return "redirect:/acquisition/order";
     }
 
@@ -87,12 +87,11 @@ public class AcquisitionController {
     @PostMapping("/verify/add")
     public String addAcceptance(@RequestParam String orderId,
                                 @RequestParam String checker,
-                                @RequestParam String acceptanceDate,
                                 @RequestParam Integer receivedQuantity,
                                 @RequestParam String status,
                                 RedirectAttributes redirectAttributes) {
         try {
-            acquisitionService.addAcceptanceRecord(orderId, checker, acceptanceDate, receivedQuantity, status);
+            acquisitionService.addAcceptanceRecord(orderId, checker, receivedQuantity, status);
             return "redirect:/acquisition/verify";
         } catch (IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
@@ -104,6 +103,7 @@ public class AcquisitionController {
     public String modify(Model model,
                          @RequestParam(required = false) String orderId) {
         model.addAttribute("orderList", acquisitionService.listOrders());
+        model.addAttribute("today", LocalDate.now());
         if (orderId != null && !orderId.isBlank()) {
             model.addAttribute("editingOrder", acquisitionService.getOrder(orderId));
         }
@@ -113,10 +113,9 @@ public class AcquisitionController {
     @PostMapping("/modify/update")
     public String updateOrder(@RequestParam String orderId,
                               @RequestParam String orderer,
-                              @RequestParam String orderDate,
                               @RequestParam Integer quantity,
                               @RequestParam Double unitPrice) {
-        acquisitionService.updateOrder(orderId, orderer, orderDate, quantity, unitPrice);
+        acquisitionService.updateOrder(orderId, orderer, quantity, unitPrice);
         return "redirect:/acquisition/modify";
     }
 

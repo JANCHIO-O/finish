@@ -1,6 +1,7 @@
 package com.example.library.periodical.controller;
 
 import com.example.library.periodical.service.PeriodicalService;
+import java.time.LocalDate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ public class PeriodicalController {
     @GetMapping("/visit")
     public String visit(Model model) {
         model.addAttribute("visitList", periodicalService.listVisits());
+        model.addAttribute("today", LocalDate.now());
         return "periodical/visit";
     }
 
@@ -32,9 +34,8 @@ public class PeriodicalController {
                            @RequestParam String issn,
                            @RequestParam String publisher,
                            @RequestParam String recommender,
-                           @RequestParam String recommendDate,
                            @RequestParam String reason) {
-        periodicalService.addVisitRecord(title, issn, publisher, recommender, recommendDate, reason);
+        periodicalService.addVisitRecord(title, issn, publisher, recommender, reason);
         return "redirect:/periodical/visit";
     }
 
@@ -47,6 +48,7 @@ public class PeriodicalController {
         model.addAttribute("prefillTitle", title);
         model.addAttribute("prefillIssn", issn);
         model.addAttribute("prefillPublisher", publisher);
+        model.addAttribute("today", LocalDate.now());
         return "periodical/order";
     }
 
@@ -55,9 +57,8 @@ public class PeriodicalController {
                            @RequestParam String issn,
                            @RequestParam String publisher,
                            @RequestParam Integer quantity,
-                           @RequestParam Double unitPrice,
-                           @RequestParam String orderDate) {
-        periodicalService.addOrder(title, issn, publisher, quantity, unitPrice, orderDate);
+                           @RequestParam Double unitPrice) {
+        periodicalService.addOrder(title, issn, publisher, quantity, unitPrice);
         return "redirect:/periodical/order";
     }
 
@@ -74,6 +75,7 @@ public class PeriodicalController {
         model.addAttribute("prefillIssn", issn);
         model.addAttribute("prefillPublisher", publisher);
         model.addAttribute("prefillQuantity", quantity);
+        model.addAttribute("today", LocalDate.now());
         return "periodical/verify";
     }
 
@@ -84,9 +86,8 @@ public class PeriodicalController {
                                 @RequestParam String publisher,
                                 @RequestParam Integer receivedQuantity,
                                 @RequestParam String checker,
-                                @RequestParam String acceptanceDate,
                                 @RequestParam String status) {
-        periodicalService.addAcceptanceRecord(orderId, title, issn, publisher, receivedQuantity, checker, acceptanceDate, status);
+        periodicalService.addAcceptanceRecord(orderId, title, issn, publisher, receivedQuantity, checker, status);
         return "redirect:/periodical/verify";
     }
 
@@ -100,6 +101,7 @@ public class PeriodicalController {
         model.addAttribute("prefillTitle", title);
         model.addAttribute("prefillIssn", issn);
         model.addAttribute("prefillPublisher", publisher);
+        model.addAttribute("today", LocalDate.now());
         return "periodical/bind";
     }
 
@@ -108,9 +110,8 @@ public class PeriodicalController {
                           @RequestParam String issn,
                           @RequestParam String publisher,
                           @RequestParam String binder,
-                          @RequestParam String bindDate,
                           @RequestParam String shelfLocation) {
-        periodicalService.addBindingRecordAndCatalog(title, issn, publisher, binder, bindDate, shelfLocation);
+        periodicalService.addBindingRecordAndCatalog(title, issn, publisher, binder, shelfLocation);
         return "redirect:/periodical/bind";
     }
 

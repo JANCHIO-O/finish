@@ -17,7 +17,7 @@
     <p>出版社：<input type="text" name="publisher" th:value="${prefillPublisher}" required></p>
     <p>文献类型：<input type="text" name="docType" th:value="${prefillDocType}" required></p>
     <p>订购人：<input type="text" name="orderer" required></p>
-    <p>订购日期：<input type="date" name="orderDate" required></p>
+    <p>订购日期：<input type="date" name="orderDate" th:value="${today}" readonly required></p>
     <p>订购册数：<input type="number" name="quantity" min="1" required></p>
     <p>订购价：<input type="number" step="0.01" name="unitPrice" min="0" required></p>
     <button type="submit">提交订购</button>

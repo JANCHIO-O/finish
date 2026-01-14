@@ -15,7 +15,7 @@
     <p>ISSN：<input type="text" name="issn" pattern="\d{8}" required></p>
     <p>出版社：<input type="text" name="publisher" required></p>
     <p>推荐人：<input type="text" name="recommender" required></p>
-    <p>推荐日期：<input type="date" name="recommendDate" required></p>
+    <p>推荐日期：<input type="date" name="recommendDate" th:value="${today}" readonly required></p>
     <p>推荐理由：<input type="text" name="reason" required></p>
     <button type="submit">添加</button>
 </form>

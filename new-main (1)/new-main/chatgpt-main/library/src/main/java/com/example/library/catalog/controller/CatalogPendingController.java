@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
 @Controller
 @RequestMapping("/catalog")
 public class CatalogPendingController {
@@ -20,6 +21,7 @@ public class CatalogPendingController {
     @GetMapping("/pending")
     public String pending(Model model) {
         model.addAttribute("pendingList", catalogService.listPendingFromAcceptance());
+        model.addAttribute("today", LocalDate.now());
         return "catalog/catalog-pending";
     }
 
@@ -31,7 +33,6 @@ public class CatalogPendingController {
                              @RequestParam String publisher,
                              @RequestParam String docType,
                              @RequestParam String checker,
-                             @RequestParam String publishDate,
                              Model model) {
 
         String normalizedIsbn = normalizeIsbn(isbn);
@@ -41,8 +42,7 @@ public class CatalogPendingController {
             return "catalog/catalog-pending";
         }
 
-        // publishDate 页面传 yyyy-MM-dd
-        Date date = Date.valueOf(publishDate);
+        Date date = Date.valueOf(LocalDate.now());
 
         catalogService.addAcceptanceRecordManually(
                 title, author, normalizedIsbn, publisher, docType, checker, date

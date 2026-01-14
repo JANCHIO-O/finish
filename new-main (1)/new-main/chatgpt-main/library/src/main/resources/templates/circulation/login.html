@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${subsystemName} + '入口'">子系统入口</title>
+    <title>流通管理子系统入口</title>
 </head>
 <body>
-<h2 th:text="${subsystemName} + '入口'">子系统入口</h2>
+<h2>流通管理子系统入口</h2>
 
 <p th:if="${message}" th:text="${message}"></p>
 
-<form th:action="${actionUrl}" method="post">
+<form th:action="@{/circulation/login}" method="post">
     <input type="hidden" name="target" th:value="${target}">
     <label>
-        教师账号：
+        学生账号：
         <input type="text" name="accountId" required>
     </label>
     <br>
@@ -24,8 +24,8 @@
     <button type="submit">登录进入</button>
 </form>
 
-<p>仅教师账号可以登录编目、采访、期刊管理与统计打印子系统。</p>
+<p>仅学生账号可以登录流通管理子系统。</p>
 
-<a th:href="@{/user/login}">前往用户管理登录</a>
+<a th:href="@{/}">返回系统首页</a>
 </body>
 </html>

@@ -10,16 +10,24 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public class SubsystemLoginInterceptor implements HandlerInterceptor {
 
+    private final String sessionAttribute;
+    private final String loginPath;
+
+    public SubsystemLoginInterceptor(String sessionAttribute, String loginPath) {
+        this.sessionAttribute = sessionAttribute;
+        this.loginPath = loginPath;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws IOException {
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("teacherAccountId") != null) {
+        if (session != null && session.getAttribute(sessionAttribute) != null) {
             return true;
         }
         String target = buildTarget(request);
-        String redirectUrl = "/subsystem/login?target="
+        String redirectUrl = loginPath + "?target="
                 + URLEncoder.encode(target, StandardCharsets.UTF_8);
         response.sendRedirect(redirectUrl);
         return false;

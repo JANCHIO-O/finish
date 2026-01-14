@@ -6,6 +6,8 @@ import com.example.library.common.repository.ReaderInfoRepository;
 import com.example.library.common.repository.UserAccountRepository;
 import com.example.library.system.service.SystemLogService;
 import jakarta.servlet.http.HttpSession;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,6 +81,42 @@ public class UserController {
         return "redirect:/user/login";
     }
 
+    @GetMapping("/manage/login")
+    public String manageLogin(@RequestParam(required = false) String target, Model model) {
+        model.addAttribute("target", target);
+        return "user/manage-login";
+    }
+
+    @PostMapping("/manage/login")
+    public String manageLoginSubmit(@RequestParam String accountId,
+                                    @RequestParam String password,
+                                    @RequestParam(required = false) String target,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+        Optional<UserAccount> account = userAccountRepository.findByAccountIdAndRole(accountId, "ADMIN");
+        if (account.isPresent() && account.get().getPassword().equals(password)) {
+            session.setAttribute("userManageAdminId", accountId);
+            systemLogService.log("管理员", "登录", "管理员账号 " + accountId + " 登录用户管理页面。");
+            redirectAttributes.addFlashAttribute("message", "登录成功，欢迎进入用户管理页面。");
+            if (target != null && !target.isBlank()) {
+                return "redirect:" + target;
+            }
+            return "redirect:/user/manage";
+        }
+        redirectAttributes.addFlashAttribute("message", "账号或密码错误，仅管理员账号可登录。");
+        if (target != null && !target.isBlank()) {
+            return "redirect:/user/manage/login?target="
+                    + URLEncoder.encode(target, StandardCharsets.UTF_8);
+        }
+        return "redirect:/user/manage/login";
+    }
+
+    @GetMapping("/manage/logout")
+    public String manageLogout(HttpSession session) {
+        session.removeAttribute("userManageAdminId");
+        return "redirect:/user/manage/login";
+    }
+
     @GetMapping("/info")
     public String info(HttpSession session, Model model) {
         String accountId = (String) session.getAttribute("currentUserId");
@@ -133,7 +171,10 @@ public class UserController {
     }
 
     @GetMapping("/manage")
-    public String manage(Model model) {
+    public String manage(HttpSession session, Model model) {
+        if (!isUserManageLoggedIn(session)) {
+            return "redirect:/user/manage/login?target=/user/manage";
+        }
         List<ReaderInfo> readerInfos = readerInfoRepository.findAll();
         model.addAttribute("readerInfos", readerInfos);
         return "user/manage";
@@ -142,7 +183,12 @@ public class UserController {
     @PostMapping("/manage/delete")
     public String deleteAccount(@RequestParam String role,
                                 @RequestParam String accountId,
+                                HttpSession session,
                                 RedirectAttributes redirectAttributes) {
+        if (!isUserManageLoggedIn(session)) {
+            redirectAttributes.addFlashAttribute("message", "请先使用管理员账号登录用户管理页面。");
+            return "redirect:/user/manage/login?target=/user/manage";
+        }
         boolean accountExists = userAccountRepository.existsByAccountId(accountId);
         boolean infoExists = readerInfoRepository.existsById(accountId);
         if (!accountExists && !infoExists) {
@@ -158,5 +204,9 @@ public class UserController {
         systemLogService.log("管理员", "删除", "管理员删除账号 " + accountId + "，并清理用户信息记录。");
         redirectAttributes.addFlashAttribute("message", "账号已删除，并同步清理用户注册表与用户信息表。");
         return "redirect:/user/manage";
+    }
+
+    private boolean isUserManageLoggedIn(HttpSession session) {
+        return session.getAttribute("userManageAdminId") != null;
     }
 }

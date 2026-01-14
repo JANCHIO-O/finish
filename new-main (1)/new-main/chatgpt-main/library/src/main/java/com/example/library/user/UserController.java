@@ -5,9 +5,12 @@ import com.example.library.common.entity.UserAccount;
 import com.example.library.common.repository.ReaderInfoRepository;
 import com.example.library.common.repository.UserAccountRepository;
 import com.example.library.system.service.SystemLogService;
+import com.example.library.user.entity.UserDeleteRecord;
+import com.example.library.user.repository.UserDeleteRecordRepository;
 import jakarta.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -26,13 +31,16 @@ public class UserController {
     private final UserAccountRepository userAccountRepository;
     private final ReaderInfoRepository readerInfoRepository;
     private final SystemLogService systemLogService;
+    private final UserDeleteRecordRepository userDeleteRecordRepository;
 
     public UserController(UserAccountRepository userAccountRepository,
                           ReaderInfoRepository readerInfoRepository,
-                          SystemLogService systemLogService) {
+                          SystemLogService systemLogService,
+                          UserDeleteRecordRepository userDeleteRecordRepository) {
         this.userAccountRepository = userAccountRepository;
         this.readerInfoRepository = readerInfoRepository;
         this.systemLogService = systemLogService;
+        this.userDeleteRecordRepository = userDeleteRecordRepository;
     }
 
     @GetMapping
@@ -171,12 +179,22 @@ public class UserController {
     }
 
     @GetMapping("/manage")
-    public String manage(HttpSession session, Model model) {
+    public String manage(@RequestParam(required = false) String role,
+                         HttpSession session,
+                         Model model) {
         if (!isUserManageLoggedIn(session)) {
             return "redirect:/user/manage/login?target=/user/manage";
         }
         List<ReaderInfo> readerInfos = readerInfoRepository.findAll();
+        Map<String, String> readerNameMap = readerInfos.stream()
+                .filter(info -> info.getName() != null)
+                .collect(Collectors.toMap(ReaderInfo::getCardNo, ReaderInfo::getName, (left, right) -> left));
         model.addAttribute("readerInfos", readerInfos);
+        model.addAttribute("selectedRole", role);
+        if (role != null && !role.isBlank()) {
+            model.addAttribute("filteredAccounts", userAccountRepository.findByRole(role));
+        }
+        model.addAttribute("readerNameMap", readerNameMap);
         return "user/manage";
     }
 
@@ -189,21 +207,35 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", "请先使用管理员账号登录用户管理页面。");
             return "redirect:/user/manage/login?target=/user/manage";
         }
-        boolean accountExists = userAccountRepository.existsByAccountId(accountId);
-        boolean infoExists = readerInfoRepository.existsById(accountId);
-        if (!accountExists && !infoExists) {
-            redirectAttributes.addFlashAttribute("message", "指定账号不存在。");
+        Optional<UserAccount> accountOpt = userAccountRepository.findByAccountIdAndRole(accountId, role);
+        Optional<ReaderInfo> infoOpt = readerInfoRepository.findById(accountId)
+                .filter(info -> role.equals(info.getRole()));
+        if (accountOpt.isEmpty() && infoOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "指定账号不存在或不属于所选类型。");
             return "redirect:/user/manage";
         }
-        if (accountExists) {
-            userAccountRepository.deleteByAccountId(accountId);
+        String name = infoOpt.map(ReaderInfo::getName).orElse("");
+        String gender = infoOpt.map(ReaderInfo::getGender).orElse("");
+        String mobile = infoOpt.map(ReaderInfo::getMobile).orElse("");
+        userDeleteRecordRepository.save(new UserDeleteRecord(accountId, role, name, gender, mobile, LocalDateTime.now()));
+        if (accountOpt.isPresent()) {
+            userAccountRepository.deleteByAccountIdAndRole(accountId, role);
         }
-        if (infoExists) {
+        if (infoOpt.isPresent()) {
             readerInfoRepository.deleteById(accountId);
         }
         systemLogService.log("管理员", "删除", "管理员删除账号 " + accountId + "，并清理用户信息记录。");
         redirectAttributes.addFlashAttribute("message", "账号已删除，并同步清理用户注册表与用户信息表。");
         return "redirect:/user/manage";
+    }
+
+    @GetMapping("/manage/delete-records")
+    public String deleteRecords(HttpSession session, Model model) {
+        if (!isUserManageLoggedIn(session)) {
+            return "redirect:/user/manage/login?target=/user/manage/delete-records";
+        }
+        model.addAttribute("deleteRecords", userDeleteRecordRepository.findAllByOrderByDeletedAtDesc());
+        return "user/manage-delete-records";
     }
 
     private boolean isUserManageLoggedIn(HttpSession session) {

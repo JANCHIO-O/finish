@@ -109,7 +109,8 @@ public class CirculationController {
 
     // 借阅页面跳转 - 匹配前端：/circulation/borrow
     @GetMapping("/borrow")
-    public String borrow() {
+    public String borrow(HttpSession session, Model model) {
+        model.addAttribute("cardNo", session.getAttribute("circulationAccountId"));
         return "circulation/borrow";
     }
 
@@ -122,7 +123,8 @@ public class CirculationController {
 
     // 还书页面跳转 - 匹配前端：/circulation/return
     @GetMapping("/return")
-    public String returnPage() {
+    public String returnPage(HttpSession session, Model model) {
+        model.addAttribute("cardNo", session.getAttribute("circulationAccountId"));
         return "circulation/return";
     }
 
@@ -135,7 +137,8 @@ public class CirculationController {
 
     // 预约页面跳转 - 匹配前端：/circulation/reserve
     @GetMapping("/reserve")
-    public String reserve() {
+    public String reserve(HttpSession session, Model model) {
+        model.addAttribute("cardNo", session.getAttribute("circulationAccountId"));
         return "circulation/reserve";
     }
 
@@ -148,8 +151,12 @@ public class CirculationController {
 
     // 超期页面跳转+数据查询 - 匹配前端：/circulation/overdue
     @GetMapping("/overdue")
-    public String overdue(Model model) {
-        List<BorrowRecordDto> overdueList = circulationService.getOverdueRecords();
+    public String overdue(HttpSession session, Model model) {
+        String cardNo = (String) session.getAttribute("circulationAccountId");
+        if (cardNo == null || cardNo.isBlank()) {
+            return "redirect:/circulation/login?target=/circulation/overdue";
+        }
+        List<BorrowRecordDto> overdueList = circulationService.getOverdueRecords(cardNo);
         model.addAttribute("overdueList", overdueList);
         return "circulation/overdue";
     }

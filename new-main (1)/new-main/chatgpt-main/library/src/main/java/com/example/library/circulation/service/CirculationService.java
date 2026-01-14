@@ -12,6 +12,7 @@ public interface CirculationService {
     String reserveBook(String cardNo, String bookId);
     List<BorrowRecordDto> getBorrowRecords(String cardNo);
     List<BorrowRecordDto> getOverdueRecords();
+    List<BorrowRecordDto> getOverdueRecords(String cardNo);
     List<CirculationBookDto> getAvailableBooks();
     List<NoticeDto> getValidNotices(String cardNo);
     List<NoticeDto> getAllNotices();

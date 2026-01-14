@@ -231,29 +231,18 @@ public class CirculationServiceImpl implements CirculationService {
     public List<BorrowRecordDto> getOverdueRecords() {
         Date freeDaysAgo = new Date(System.currentTimeMillis() - (long)BORROW_FREE_DAYS * 24 * 60 * 60 * 1000);
         List<BorrowRecord> entityList = borrowRecordRepository.findByReturnDateIsNullAndFlowDateBefore(freeDaysAgo);
-        List<BorrowRecordDto> dtoList = new ArrayList<>();
-        for (BorrowRecord entity : entityList) {
-            BorrowRecordDto dto = new BorrowRecordDto();
-            dto.setFlowId(entity.getFlowId());
-            dto.setBookId(entity.getBookId());
-            dto.setIsbn(entity.getIsbn());
-            dto.setTitle(entity.getTitle());
-            dto.setAuthor(entity.getAuthor());
-            dto.setCardNo(entity.getCardNo());
-            dto.setName(entity.getName());
-            dto.setFlowDate(entity.getFlowDate());
-            long daysDiff = (System.currentTimeMillis() - entity.getFlowDate().getTime()) / (1000 * 60 * 60 * 24);
-            int overdueDays = (int) (daysDiff - BORROW_FREE_DAYS);
-            dto.setOverdueDays(overdueDays);
-            dto.setPenalty(overdueDays * PENALTY_PER_DAY);
-            dtoList.add(dto);
+        return buildOverdueDtos(entityList);
+    }
 
-            // 自动生成超期提醒公告
-            createNotice("图书超期提醒",
-                    "您好！您借阅的图书《"+entity.getTitle()+"》(编号："+entity.getBookId()+")已超期"+overdueDays+"天，预计罚金¥"+String.format("%.2f",overdueDays * PENALTY_PER_DAY)+"，请尽快归还！",
-                    entity.getCardNo(), "overdue", entity.getBookId());
+    @Override
+    public List<BorrowRecordDto> getOverdueRecords(String cardNo) {
+        if (cardNo == null || cardNo.trim().isEmpty()) {
+            return new ArrayList<>();
         }
-        return dtoList;
+        Date freeDaysAgo = new Date(System.currentTimeMillis() - (long)BORROW_FREE_DAYS * 24 * 60 * 60 * 1000);
+        List<BorrowRecord> entityList = borrowRecordRepository
+                .findByCardNoAndReturnDateIsNullAndFlowDateBefore(cardNo, freeDaysAgo);
+        return buildOverdueDtos(entityList);
     }
 
     @Override
@@ -356,5 +345,31 @@ public class CirculationServiceImpl implements CirculationService {
         notice.setPublisher("系统");
         notice.setIsValid("有效");
         noticeRepository.save(notice);
+    }
+
+    private List<BorrowRecordDto> buildOverdueDtos(List<BorrowRecord> entityList) {
+        List<BorrowRecordDto> dtoList = new ArrayList<>();
+        for (BorrowRecord entity : entityList) {
+            BorrowRecordDto dto = new BorrowRecordDto();
+            dto.setFlowId(entity.getFlowId());
+            dto.setBookId(entity.getBookId());
+            dto.setIsbn(entity.getIsbn());
+            dto.setTitle(entity.getTitle());
+            dto.setAuthor(entity.getAuthor());
+            dto.setCardNo(entity.getCardNo());
+            dto.setName(entity.getName());
+            dto.setFlowDate(entity.getFlowDate());
+            long daysDiff = (System.currentTimeMillis() - entity.getFlowDate().getTime()) / (1000 * 60 * 60 * 24);
+            int overdueDays = (int) (daysDiff - BORROW_FREE_DAYS);
+            dto.setOverdueDays(overdueDays);
+            dto.setPenalty(overdueDays * PENALTY_PER_DAY);
+            dtoList.add(dto);
+
+            // 自动生成超期提醒公告
+            createNotice("图书超期提醒",
+                    "您好！您借阅的图书《"+entity.getTitle()+"》(编号："+entity.getBookId()+")已超期"+overdueDays+"天，预计罚金¥"+String.format("%.2f",overdueDays * PENALTY_PER_DAY)+"，请尽快归还！",
+                    entity.getCardNo(), "overdue", entity.getBookId());
+        }
+        return dtoList;
     }
 }

@@ -1,15 +1,13 @@
 package com.example.library.web.service;
 
-import com.example.library.common.entity.AcceptanceRecord;
-import com.example.library.common.entity.AcquisitionRecord;
 import com.example.library.common.entity.BorrowRecord;
 import com.example.library.common.entity.CirculationBook;
 import com.example.library.common.entity.UserAccount;
-import com.example.library.common.repository.AcceptanceRecordRepository;
-import com.example.library.common.repository.AcquisitionRecordRepository;
 import com.example.library.common.repository.BorrowRecordRepository;
 import com.example.library.common.repository.CirculationBookRepository;
 import com.example.library.common.repository.UserAccountRepository;
+import com.example.library.catalog.entity.TransferRecordEntity;
+import com.example.library.catalog.repository.TransferRecordRepository;
 import com.example.library.web.dto.WebNewBookDto;
 import com.example.library.web.dto.WebOverdueNoticeDto;
 import com.example.library.web.entity.WebAnnouncement;
@@ -33,25 +31,22 @@ public class WebService {
     private static final long BORROW_DAYS_LIMIT = 30L;
 
     private final UserAccountRepository userAccountRepository;
-    private final AcceptanceRecordRepository acceptanceRecordRepository;
-    private final AcquisitionRecordRepository acquisitionRecordRepository;
     private final BorrowRecordRepository borrowRecordRepository;
     private final CirculationBookRepository circulationBookRepository;
+    private final TransferRecordRepository transferRecordRepository;
     private final WebAnnouncementRepository webAnnouncementRepository;
     private final WebMessageRepository webMessageRepository;
 
     public WebService(UserAccountRepository userAccountRepository,
-                      AcceptanceRecordRepository acceptanceRecordRepository,
-                      AcquisitionRecordRepository acquisitionRecordRepository,
                       BorrowRecordRepository borrowRecordRepository,
                       CirculationBookRepository circulationBookRepository,
+                      TransferRecordRepository transferRecordRepository,
                       WebAnnouncementRepository webAnnouncementRepository,
                       WebMessageRepository webMessageRepository) {
         this.userAccountRepository = userAccountRepository;
-        this.acceptanceRecordRepository = acceptanceRecordRepository;
-        this.acquisitionRecordRepository = acquisitionRecordRepository;
         this.borrowRecordRepository = borrowRecordRepository;
         this.circulationBookRepository = circulationBookRepository;
+        this.transferRecordRepository = transferRecordRepository;
         this.webAnnouncementRepository = webAnnouncementRepository;
         this.webMessageRepository = webMessageRepository;
     }
@@ -62,20 +57,26 @@ public class WebService {
     }
 
     public List<WebNewBookDto> listNewBooks() {
-        Map<String, AcquisitionRecord> acquisitionMap = acquisitionRecordRepository.findAll().stream()
-                .collect(Collectors.toMap(AcquisitionRecord::getIsbn, record -> record, (a, b) -> a));
-        return acceptanceRecordRepository.findAll().stream()
-                .sorted(Comparator.comparing(AcceptanceRecord::getPublishDate).reversed())
+        Map<String, CirculationBook> circulationMap = circulationBookRepository.findAll().stream()
+                .collect(Collectors.toMap(CirculationBook::getIsbn, record -> record, (a, b) -> a));
+        return transferRecordRepository.findAll().stream()
+                .sorted(Comparator.comparing(TransferRecordEntity::getTransferDate,
+                        Comparator.nullsLast(Comparator.naturalOrder())).reversed())
                 .map(record -> {
-                    AcquisitionRecord acquisition = acquisitionMap.get(record.getIsbn());
-                    String author = acquisition != null ? acquisition.getAuthor() : "未知";
+                    CirculationBook circulationBook = circulationMap.get(record.getIsbn());
+                    String author = circulationBook != null && circulationBook.getAuthor() != null
+                            && !circulationBook.getAuthor().isBlank() ? circulationBook.getAuthor() : "未知";
+                    String publisher = circulationBook != null && circulationBook.getPublisher() != null
+                            && !circulationBook.getPublisher().isBlank() ? circulationBook.getPublisher() : "未知";
+                    String docType = circulationBook != null && circulationBook.getDocType() != null
+                            && !circulationBook.getDocType().isBlank() ? circulationBook.getDocType() : "未知";
                     return new WebNewBookDto(
-                            record.getTitle(),
+                            record.getBookName(),
                             author,
                             record.getIsbn(),
-                            record.getPublisher(),
-                            record.getDocType(),
-                            record.getPublishDate()
+                            publisher,
+                            docType,
+                            record.getTransferDate()
                     );
                 })
                 .toList();

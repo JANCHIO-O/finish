@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>图书查询</title>
+</head>
+<body>
+<h2>图书查询</h2>
+
+<form th:action="@{/web/query}" method="get">
+    <label>
+        分类：
+        <select name="category">
+            <option value="">全部</option>
+            <option th:each="categoryItem : ${categories}"
+                    th:value="${categoryItem}"
+                    th:text="${categoryItem}"
+                    th:selected="${categoryItem == selectedCategory}"></option>
+        </select>
+    </label>
+    <br>
+    <label>
+        书名：
+        <input type="text" name="title" th:value="${title}">
+    </label>
+    <br>
+    <label>
+        作者：
+        <input type="text" name="author" th:value="${author}">
+    </label>
+    <br>
+    <label>
+        ISBN：
+        <input type="text" name="isbn" th:value="${isbn}">
+    </label>
+    <br>
+    <label>
+        关键字：
+        <input type="text" name="keyword" th:value="${keyword}">
+    </label>
+    <br>
+    <button type="submit">查询</button>
+</form>
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+    <tr>
+        <th>书名</th>
+        <th>作者</th>
+        <th>ISBN</th>
+        <th>出版社</th>
+        <th>分类</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${results == null || results.isEmpty()}">
+        <td colspan="5">暂无查询结果。</td>
+    </tr>
+    <tr th:each="book : ${results}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.publisher}"></td>
+        <td th:text="${book.docType}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/web}">返回目录</a>
+</body>
+</html>

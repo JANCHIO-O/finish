@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预约处理</title>
+    <style>body{margin:50px;font-size:16px;}</style>
+</head>
+<body>
+<h2>图书预约</h2>
+<hr>
+<form id="reserveForm">
+    借书证号：<input type="text" id="cardNo" required placeholder="请输入借书证号"><br><br>
+    图书编号：<input type="text" id="bookId" required placeholder="请输入图书编号"><br><br>
+    <input type="submit" value="确认预约">
+    <input type="reset" value="重置">
+</form>
+<div id="result" style="margin-top:20px;color:red;font-weight:bold;"></div>
+<br>
+<a href="/circulation">← 返回流通菜单</a> <!-- 修复路径 -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script>
+    $("#reserveForm").submit(function(e){
+        e.preventDefault();
+        let cardNo = $("#cardNo").val().trim();
+        let bookId = $("#bookId").val().trim();
+        if(!cardNo){
+            $("#result").text("请输入借书证号！");
+            return;
+        }
+        if(!bookId){
+            $("#result").text("请输入图书编号！");
+            return;
+        }
+        $.post("/circulation/api/reserve",{cardNo:cardNo,bookId:bookId},function(res){
+            $("#result").text(res);
+            if(res.includes("成功")) $("#result").css("color","green");
+            else $("#result").css("color","red");
+        });
+    });
+</script>
+</body>
+</html>

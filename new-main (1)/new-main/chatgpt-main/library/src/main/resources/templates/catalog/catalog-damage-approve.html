@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>报损审核</title>
+</head>
+<body>
+<h1>✅ 报损审核</h1>
+
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>申请编号</th>
+        <th>ISBN</th>
+        <th>书名</th>
+        <th>图书编号</th>
+        <th>报损原因</th>
+        <th>报损日期</th>
+        <th>申请人</th>
+        <th>审核</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="request : ${damageRequests}">
+        <td th:text="${request.requestId}"></td>
+        <td th:text="${request.isbn}"></td>
+        <td th:text="${request.bookName}"></td>
+        <td th:text="${request.bookId}"></td>
+        <td th:text="${request.damageReason}"></td>
+        <td th:text="${request.damageDate}"></td>
+        <td th:text="${request.applicant}"></td>
+        <td>
+            <form action="/catalog/damage/approve/submit" method="post">
+                <input type="hidden" name="requestId" th:value="${request.requestId}">
+                <div>
+                    <label>
+                        <input type="radio" name="decision" value="approve" required> 通过
+                    </label>
+                    <label>
+                        <input type="radio" name="decision" value="reject" required> 拒绝
+                    </label>
+                </div>
+                <div>
+                    <input type="text" name="operator" placeholder="审核人" required>
+                </div>
+                <button type="submit">提交</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    <a href="/catalog/index">返回编目子系统</a>
+</p>
+</body>
+</html>

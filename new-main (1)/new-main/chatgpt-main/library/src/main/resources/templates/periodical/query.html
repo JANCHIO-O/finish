@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>期刊查询</title>
+</head>
+<body>
+
+<h2>🔍 期刊查询</h2>
+
+<div th:if="${#lists.isEmpty(catalogList)}">
+    <p>暂无期刊馆藏信息</p>
+</div>
+
+<table border="1" th:if="${!#lists.isEmpty(catalogList)}">
+    <tr>
+        <th>馆藏编号</th>
+        <th>期刊名称</th>
+        <th>ISSN</th>
+        <th>出版社</th>
+        <th>出版日期</th>
+        <th>馆藏位置</th>
+    </tr>
+    <tr th:each="record : ${catalogList}">
+        <td th:text="${record.catalogId}"></td>
+        <td th:text="${record.title}"></td>
+        <td th:text="${record.issn}"></td>
+        <td th:text="${record.publisher}"></td>
+        <td th:text="${record.publishDate}"></td>
+        <td th:text="${record.location}"></td>
+    </tr>
+</table>
+
+<p><a href="/periodical">返回期刊管理首页</a></p>
+
+</body>
+</html>

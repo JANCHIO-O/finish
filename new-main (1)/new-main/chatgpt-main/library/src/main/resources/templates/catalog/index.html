@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编目子系统</title>
+</head>
+<body>
+
+<h1>📚 编目子系统</h1>
+<hr>
+
+<ul>
+    <li>
+        <a href="/catalog/pending">① 待编书目查看</a>
+        <p>来自采访子系统验收清单，查看本批次待编图书</p>
+    </li>
+
+    <li>
+        <a href="/catalog/direct">② 直接编目（自动查重）</a>
+        <p>对待编图书进行直接编目，自动检查是否重复</p>
+    </li>
+
+    <li>
+        <a href="/catalog/list">③ 编目清单查询</a>
+        <p>查看当前批次已完成编目的图书</p>
+    </li>
+
+    <li>
+        <a href="/catalog/transfer">④ 移送管理</a>
+        <p>生成移送清单，并写入图书流通库</p>
+    </li>
+
+    <li>
+        <a href="/catalog/transfer/list">⑤ 移送清单查看</a>
+        <p>查看本次移送生成的移送清单</p>
+    </li>
+
+    <li>
+        <a href="/catalog/notice">⑥ 新书通报</a>
+        <p>查看或发布本次移送生成的新书通报</p>
+    </li>
+
+    <li>
+        <a href="/catalog/damage/request">⑦ 申请报损</a>
+        <p>从流通库选择图书并提交报损申请</p>
+    </li>
+
+    <li>
+        <a href="/catalog/damage/approve">⑧ 报损审核</a>
+        <p>审核报损申请并生成报损记录</p>
+    </li>
+
+    <li>
+        <a href="/catalog/damage/records">⑨ 报损记录查看</a>
+        <p>查看已审核通过的报损记录</p>
+    </li>
+</ul>
+
+<hr>
+
+<p>
+    <a th:href="@{/}">返回系统首页</a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编目清单</title>
+</head>
+<body>
+
+<h2>编目清单（当前批次）</h2>
+
+<table border="1">
+    <tr>
+        <th>图书编号</th>
+        <th>ISBN</th>
+        <th>书名</th>
+        <th>编目员</th>
+        <th>编目日期</th>
+    </tr>
+
+    <tr th:each="book : ${catalogList}">
+        <td th:text="${book.bookId}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.bookName}"></td>
+        <td th:text="${book.cataloger}"></td>
+        <td th:text="${#temporals.format(book.catalogDate,'yyyy-MM-dd')}"></td>
+    </tr>
+</table>
+
+<p>
+    <a href="/catalog/index">返回编目首页</a>
+</p>
+
+</body>
+</html>

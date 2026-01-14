@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>统计报表</title>
+</head>
+<body>
+<h2>统计报表</h2>
+
+<p th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;"></p>
+
+<div th:if="${record}">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>统计类型</th>
+            <th>统计周期</th>
+            <th>统计日期</th>
+            <th>总借阅次数</th>
+            <th>活跃读者数</th>
+            <th>备注</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${statTypeLabel}"></td>
+            <td th:text="${record.statPeriod}"></td>
+            <td th:text="${statDate}"></td>
+            <td th:text="${record.totalBorrow}"></td>
+            <td th:text="${record.activeReaderCount}"></td>
+            <td th:text="${record.remark}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <h3>读者借阅统计（学生）</h3>
+    <p th:if="${#lists.isEmpty(readerSummaries)}">暂无学生读者数据。</p>
+    <table th:if="${!#lists.isEmpty(readerSummaries)}" border="1">
+        <thead>
+        <tr>
+            <th>读者证号</th>
+            <th>姓名</th>
+            <th>借书次数</th>
+            <th>借过的书</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="summary : ${readerSummaries}">
+            <td th:text="${summary.cardNo}"></td>
+            <td th:text="${summary.name}"></td>
+            <td th:text="${summary.borrowCount}"></td>
+            <td th:text="${summary.borrowedTitlesText}"></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="4" th:text="'活跃读者数：' + ${activeReaderCount}"></td>
+        </tr>
+        </tfoot>
+    </table>
+    <a th:href="@{/statistics/report(statId=${record.statId})}">刷新报表</a>
+</div>
+
+<br>
+<a th:href="@{/statistics/stat}">返回统计条件选择</a>
+</body>
+</html>

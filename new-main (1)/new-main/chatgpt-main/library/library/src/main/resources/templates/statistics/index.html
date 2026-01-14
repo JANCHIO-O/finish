@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>统计打印目录</title>
+</head>
+<body>
+
+<h2>统计打印子系统</h2>
+
+<ul>
+    <li><a th:href="@{/statistics/stat}">统计</a></li>
+    <li><a th:href="@{/statistics/print}">打印</a></li>
+    <li><a th:href="@{/statistics/extract}">数据提取</a></li>
+    <li><a th:href="@{/statistics/calc}">统计计算</a></li>
+    <li><a th:href="@{/statistics/report}">报表生成</a></li>
+</ul>
+
+<a th:href="@{/}">返回首页</a>
+
+</body>
+</html>

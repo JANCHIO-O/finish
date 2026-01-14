@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>退货申请</title>
+</head>
+<body>
+
+<h2>↩️ 退货申请</h2>
+
+<div th:if="${prefillOrder == null}">
+    <p>未找到可退货的订单。</p>
+</div>
+
+<form th:if="${prefillOrder != null}" action="/acquisition/return/add" method="post">
+    <p>订单号：<input type="text" th:value="${prefillOrder.orderId}" readonly></p>
+    <p>订购日期：<input type="date" name="orderDate" th:value="${prefillOrder.orderDate}" readonly></p>
+    <p>订购人：<input type="text" name="orderer" th:value="${prefillOrder.orderer}" readonly></p>
+    <p>题名：<input type="text" name="title" th:value="${prefillOrder.title}" readonly></p>
+    <p>作者：<input type="text" name="author" th:value="${prefillOrder.author}" readonly></p>
+    <p>ISBN：<input type="text" name="isbn" th:value="${prefillOrder.isbn}" readonly></p>
+    <p>出版社：<input type="text" name="publisher" th:value="${prefillOrder.publisher}" readonly></p>
+    <p>文献类型：<input type="text" name="docType" th:value="${prefillOrder.docType}" readonly></p>
+    <p>订购价：<input type="number" step="0.01" name="unitPrice" th:value="${prefillOrder.unitPrice}" readonly></p>
+    <p>征订册数：<input type="number" name="orderQuantity" th:value="${prefillOrder.quantity}" readonly></p>
+    <p>订购状态：<input type="text" name="orderStatus" th:value="${prefillOrder.status}" readonly></p>
+    <p>退货数量：<input type="number" name="returnQuantity" th:value="${prefillOrder.quantity}" readonly></p>
+    <p>退货人：<input type="text" name="returner" required></p>
+    <p>退货原因：<input type="text" name="returnReason" required></p>
+    <input type="hidden" name="currency" value="CNY">
+    <button type="submit">确认退货</button>
+</form>
+
+<p><a href="/acquisition/modify">返回订单修改</a></p>
+
+</body>
+</html>

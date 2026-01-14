@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>待编书目查看</title>
+</head>
+<body>
+
+<h2>📌 待编书目查看（验收清单）</h2>
+
+<div th:if="${error}" style="color: red; font-weight: bold;" th:text="${error}"></div>
+
+<!-- 手动添加到验收清单 -->
+<h3>➕ 手动添加到验收清单</h3>
+<form action="/catalog/pending/add" method="post">
+    <p>书名：<input type="text" name="title" required></p>
+    <p>ISBN：
+        <input type="text" name="isbn" required inputmode="numeric" maxlength="13"
+               oninput="this.value = this.value.replace(/\\D/g, '').slice(0, 13);">
+    </p>
+    <p>出版社：<input type="text" name="publisher" required></p>
+    <p>文献类型：<input type="text" name="docType" required></p>
+    <p>验收人：<input type="text" name="checker" required></p>
+    <p>出版日期：<input type="date" name="publishDate" required></p>
+    <button type="submit">添加</button>
+</form>
+
+<hr>
+
+<!-- 展示验收清单 -->
+<h3>📚 本批次待编书目（来自 acceptance_record）</h3>
+
+<div th:if="${#lists.isEmpty(pendingList)}">
+    <p>当前验收清单为空</p>
+</div>
+
+<table border="1" th:if="${!#lists.isEmpty(pendingList)}">
+    <tr>
+        <th>验收编号</th>
+        <th>书名</th>
+        <th>ISBN</th>
+        <th>出版社</th>
+        <th>文献类型</th>
+        <th>验收人</th>
+        <th>出版日期</th>
+        <th>操作</th>
+    </tr>
+    <tr th:each="book : ${pendingList}">
+        <td th:text="${book.checkId}"></td>
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.publisher}"></td>
+        <td th:text="${book.docType}"></td>
+        <td th:text="${book.checker}"></td>
+        <td th:text="${book.publishDate}"></td>
+        <td>
+            <a th:href="@{'/catalog/direct'(isbn=${book.isbn},bookName=${book.title})}">
+                去直接编目
+            </a>
+        </td>
+    </tr>
+</table>
+
+<p><a href="/catalog/index">返回编目首页</a></p>
+
+</body>
+</html>

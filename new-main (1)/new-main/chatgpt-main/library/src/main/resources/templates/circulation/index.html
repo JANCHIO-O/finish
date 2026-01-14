@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>流通子系统-首页</title>
+    <style>body{margin: 50px;font-size:16px;} ul{list-style: none;padding:0;} li{margin:12px 0;} a{text-decoration:none;color:#0066cc;font-size:17px;} a:hover{color:red;text-decoration:underline;}</style>
+</head>
+<body>
+<h2> 图书流通子系统</h2>
+<hr>
+<div th:if="${notices != null and notices.size()>0}">
+    <h4> 系统公告</h4>
+    <div th:each="notice:${notices}" style="background:#f8f9fa;padding:8px;margin:8px 0;border-radius:5px;">
+        <p th:text="${notice.noticeTitle}" style="font-weight:bold;margin:0;"></p>
+        <p th:text="${notice.noticeContent}" style="margin:5px 0;"></p>
+    </div>
+    <hr>
+</div>
+<h4>功能菜单</h4>
+<ul>
+    <li> <a href="/circulation/borrow">借阅处理</a></li>
+    <li> <a href="/circulation/return">还书处理</a></li>
+    <li> <a href="/circulation/reserve">预约处理</a></li>
+    <li> <a href="/circulation/overdue">超期处理</a></li>
+    <li> <a href="/circulation/info">流通信息查询</a></li>
+    <li> <a href="/circulation/notice-manage">公告管理</a></li>
+</ul>
+<a href="/">← 返回系统首页</a>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>申请报损</title>
+</head>
+<body>
+<h1>📕 申请报损</h1>
+<p>请选择流通库图书并填写报损信息。</p>
+
+<form action="/catalog/damage/request/submit" method="post">
+    <div>
+        <label>ISBN：</label>
+        <input type="text" id="isbn" name="isbn" readonly required>
+    </div>
+    <div>
+        <label>书名：</label>
+        <input type="text" id="bookName" name="bookName" readonly>
+    </div>
+    <div>
+        <label>报损原因：</label>
+        <input type="text" name="damageReason" required>
+    </div>
+    <div>
+        <label>申请人：</label>
+        <input type="text" name="applicant" required>
+    </div>
+    <div>
+        <label>报损日期：</label>
+        <input type="date" name="damageDate" required>
+    </div>
+    <button type="submit">提交申请</button>
+</form>
+
+<hr>
+
+<h2>图书流通库表</h2>
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>ISBN</th>
+        <th>书名</th>
+        <th>图书编号</th>
+        <th>编目日期</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${circulationList}">
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.bookId}"></td>
+        <td th:text="${book.catalogDate}"></td>
+        <td>
+            <button type="button"
+                    class="select-book"
+                    th:attr="data-isbn=${book.isbn},data-title=${book.title}">
+                申请报损
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    <a href="/catalog/index">返回编目子系统</a>
+</p>
+
+<script>
+    document.querySelectorAll(".select-book").forEach(function (button) {
+        button.addEventListener("click", function () {
+            document.getElementById("isbn").value = button.dataset.isbn;
+            document.getElementById("bookName").value = button.dataset.title;
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+</script>
+</body>
+</html>

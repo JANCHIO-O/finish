@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新书通报</title>
+</head>
+<body>
+<h2>新书通报</h2>
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+    <tr>
+        <th>书名</th>
+        <th>作者</th>
+        <th>ISBN</th>
+        <th>出版社</th>
+        <th>文献类型</th>
+        <th>验收日期</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${newBooks == null || newBooks.isEmpty()}">
+        <td colspan="6">暂无新书记录。</td>
+    </tr>
+    <tr th:each="book : ${newBooks}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.publisher}"></td>
+        <td th:text="${book.docType}"></td>
+        <td th:text="${book.publishDate}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>说明：新书来源于验收清单数据，展示书名、作者、ISBN 等基础信息，便于读者了解最新入馆书目。</p>
+
+<a th:href="@{/web}">返回目录</a>
+</body>
+</html>

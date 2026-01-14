@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+</head>
+<body>
+<h2>用户信息查询</h2>
+
+<p th:if="${message}" th:text="${message}"></p>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>账号</th>
+        <th>角色</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>手机号</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="info : ${readerInfos}">
+        <td th:text="${info.cardNo}"></td>
+        <td th:text="${info.role}"></td>
+        <td th:text="${info.name}"></td>
+        <td th:text="${info.gender}"></td>
+        <td th:text="${info.mobile}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>账号删除</h3>
+<form th:action="@{/user/manage/delete}" method="post">
+    <label>
+        账号类型：
+        <select name="role" required>
+            <option value="TEACHER">教师账号</option>
+            <option value="STUDENT">学生账号</option>
+        </select>
+    </label>
+    <br>
+    <label>
+        工号/借书证号：
+        <input type="text" name="accountId" required>
+    </label>
+    <br>
+    <button type="submit">删除账号</button>
+</form>
+
+<a th:href="@{/user}">返回用户管理目录</a>
+</body>
+</html>

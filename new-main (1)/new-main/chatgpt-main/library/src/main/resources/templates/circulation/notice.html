@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的公告与通知</title>
+    <style>
+        body { padding: 20px; font-size: 14px; }
+        h2 { color: #333; border-bottom: 1px solid #eee; padding-bottom:10px; }
+        table { width: 100%; border-collapse: collapse; margin-top:20px; }
+        th,td { border:1px solid #e6e6e6; padding:12px; text-align: left; }
+        th { background-color: #f9f9f9; font-weight: bold; color: #666; }
+        tr:hover { background-color: #fafafa; }
+        .notice-overdue { color: #dc3545; font-weight: bold; }
+        .notice-reserve { color: #0d6efd; font-weight: bold; }
+        .notice-borrow { color: #198754; font-weight: bold; }
+        .notice-system { color: #6c757d; }
+        .empty { margin-top:20px; color: #999; font-size:16px; }
+        a { color: #0d6efd; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<h2>我的公告与通知</h2>
+<hr>
+<div th:if="${#lists.isEmpty(noticeList)}" class="empty">暂无公告和通知</div>
+<table th:unless="${#lists.isEmpty(noticeList)}">
+    <tr>
+        <<th width="20%">通知标题</</th>
+        <<th width="45%">通知内容</</th>
+        <<th width="20%">发布时间</</th>
+        <<th width="15%">通知类型</</th>
+    </tr>
+    <tr th:each="notice : ${noticeList}">
+        <td th:classappend="${notice.bizType == 'overdue'} ? 'notice-overdue' :
+                             ${notice.bizType == 'reserve'} ? 'notice-reserve' :
+                             ${notice.bizType == 'borrow'} ? 'notice-borrow' : 'notice-system'">
+            [[${notice.noticeTitle}]]
+        </td>
+        <td>[[${notice.noticeContent}]]</td>
+        <td>[[${#dates.format(notice.publishTime, 'yyyy-MM-dd HH:mm')}]]</td>
+        <td>
+            <span th:if="${notice.bizType == 'overdue'}">超期提醒</span>
+            <span th:if="${notice.bizType == 'reserve'}">预约通知</span>
+            <span th:if="${notice.bizType == 'borrow'}">借阅通知</span>
+            <span th:if="${notice.bizType == 'system'}">系统公告</span>
+        </td>
+    </tr>
+</table>
+<br>
+<a href="/circulation">← 返回流通菜单</a> <!-- 修复路径：从/index改为/circulation -->
+</body>
+</html>

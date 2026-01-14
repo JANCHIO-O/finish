@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>报损记录</title>
+</head>
+<body>
+<h1>📒 报损记录</h1>
+
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>报损编号</th>
+        <th>ISBN</th>
+        <th>书名</th>
+        <th>图书编号</th>
+        <th>报损原因</th>
+        <th>报损日期</th>
+        <th>经办人</th>
+        <th>审核状态</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="record : ${damageRecords}">
+        <td th:text="${record.damageId}"></td>
+        <td th:text="${record.isbn}"></td>
+        <td th:text="${record.bookName}"></td>
+        <td th:text="${record.bookId}"></td>
+        <td th:text="${record.damageReason}"></td>
+        <td th:text="${record.damageDate}"></td>
+        <td th:text="${record.operator}"></td>
+        <td th:text="${record.approveStatus}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    <a href="/catalog/index">返回编目子系统</a>
+</p>
+</body>
+</html>

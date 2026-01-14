@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+</head>
+<body>
+<h2>用户登录</h2>
+
+<p th:if="${message}" th:text="${message}"></p>
+
+<form th:action="@{/user/login}" method="post">
+    <label>
+        登录类型：
+        <select name="role" required>
+            <option value="TEACHER">教师登录（工号）</option>
+            <option value="STUDENT">学生登录（借书证号）</option>
+        </select>
+    </label>
+    <br>
+    <label>
+        工号/借书证号：
+        <input type="text" name="accountId" required>
+    </label>
+    <br>
+    <label>
+        密码：
+        <input type="password" name="password" required>
+    </label>
+    <br>
+    <button type="submit">登录</button>
+</form>
+
+<a th:href="@{/user}">返回用户管理目录</a>
+</body>
+</html>

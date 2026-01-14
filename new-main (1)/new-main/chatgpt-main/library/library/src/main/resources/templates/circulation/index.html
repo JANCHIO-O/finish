@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>流通管理目录</title>
+</head>
+<body>
+
+<h2>流通子系统</h2>
+
+<ul>
+    <li><a th:href="@{/circulation/borrow}">借阅处理</a></li>
+    <li><a th:href="@{/circulation/return}">还书处理</a></li>
+    <li><a th:href="@{/circulation/reserve}">预约处理</a></li>
+    <li><a th:href="@{/circulation/overdue}">超期处理</a></li>
+    <li><a th:href="@{/circulation/info}">流通信息查询</a></li>
+</ul>
+
+<a th:href="@{/}">返回首页</a>
+
+</body>
+</html>

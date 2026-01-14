@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新书通报</title>
+</head>
+<body>
+
+<h2>📢 新书通报</h2>
+
+<div th:if="${#lists.isEmpty(noticeList)}">
+    <p>暂无新书通报</p>
+</div>
+
+<div th:each="notice : ${noticeList}">
+    <hr>
+
+    <h3 th:text="${notice.title}"></h3>
+
+    <p>
+        发布时间：
+        <span th:text="${#dates.format(notice.publishTime, 'yyyy-MM-dd HH:mm')}"></span>
+    </p>
+
+    <p>
+        状态：
+        <strong th:text="${notice.noticeStatus}"></strong>
+    </p>
+
+    <table border="1">
+        <tr>
+            <th>ISBN</th>
+            <th>书名</th>
+            <th>数量</th>
+            <th>馆藏位置</th>
+        </tr>
+        <tr th:each="book : ${notice.books}">
+            <td th:text="${book.isbn}"></td>
+            <td th:text="${book.bookName}"></td>
+            <td th:text="${book.amount}"></td>
+            <td th:text="${book.location}"></td>
+        </tr>
+    </table>
+</div>
+
+<p>
+    <a href="/catalog/index">返回编目子系统</a>
+</p>
+
+</body>
+</html>

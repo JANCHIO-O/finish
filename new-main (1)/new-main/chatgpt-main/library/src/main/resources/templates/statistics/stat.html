@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>统计条件选择</title>
+</head>
+<body>
+<h2>统计条件选择</h2>
+
+<p th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;"></p>
+
+<form th:action="@{/statistics/stat}" method="post">
+    <p>统计类型：统计报表及读者借阅统计</p>
+    <label>
+        统计周期：
+        <select name="statPeriod" required>
+            <option value="" disabled selected>请选择</option>
+            <option th:each="period : ${statPeriods}" th:value="${period}" th:text="${period}"></option>
+        </select>
+    </label>
+    <br>
+    <button type="submit">提交统计</button>
+</form>
+
+<a th:href="@{/statistics}">返回统计目录</a>
+</body>
+</html>

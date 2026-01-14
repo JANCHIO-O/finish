@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>期刊装订</title>
+</head>
+<body>
+
+<h2>📚 期刊装订</h2>
+
+<h3>➕ 新增装订记录</h3>
+<form action="/periodical/bind/add" method="post">
+    <p>期刊名称：<input type="text" name="title" th:value="${prefillTitle}" required></p>
+    <p>ISSN：<input type="text" name="issn" pattern="\d{8}" th:value="${prefillIssn}" required></p>
+    <p>出版社：<input type="text" name="publisher" th:value="${prefillPublisher}" required></p>
+    <p>装订人员：<input type="text" name="binder" required></p>
+    <p>装订日期：<input type="date" name="bindDate" required></p>
+    <p>馆藏位置：<input type="text" name="shelfLocation" required></p>
+    <button type="submit">装订入库</button>
+</form>
+
+<hr>
+
+<h3>📋 装订记录</h3>
+<div th:if="${#lists.isEmpty(bindingList)}">
+    <p>暂无装订记录</p>
+</div>
+
+<table border="1" th:if="${!#lists.isEmpty(bindingList)}">
+    <tr>
+        <th>装订编号</th>
+        <th>期刊名称</th>
+        <th>ISSN</th>
+        <th>出版社</th>
+        <th>装订人员</th>
+        <th>装订日期</th>
+        <th>馆藏位置</th>
+    </tr>
+    <tr th:each="record : ${bindingList}">
+        <td th:text="${record.bindId}"></td>
+        <td th:text="${record.title}"></td>
+        <td th:text="${record.issn}"></td>
+        <td th:text="${record.publisher}"></td>
+        <td th:text="${record.binder}"></td>
+        <td th:text="${record.bindDate}"></td>
+        <td th:text="${record.shelfLocation}"></td>
+    </tr>
+</table>
+
+<hr>
+
+<h3>📖 期刊流通库表</h3>
+<div th:if="${#lists.isEmpty(catalogList)}">
+    <p>暂无期刊馆藏记录</p>
+</div>
+
+<table border="1" th:if="${!#lists.isEmpty(catalogList)}">
+    <tr>
+        <th>馆藏编号</th>
+        <th>期刊名称</th>
+        <th>ISSN</th>
+        <th>出版社</th>
+        <th>出版日期</th>
+        <th>馆藏位置</th>
+    </tr>
+    <tr th:each="record : ${catalogList}">
+        <td th:text="${record.catalogId}"></td>
+        <td th:text="${record.title}"></td>
+        <td th:text="${record.issn}"></td>
+        <td th:text="${record.publisher}"></td>
+        <td th:text="${record.publishDate}"></td>
+        <td th:text="${record.location}"></td>
+    </tr>
+</table>
+
+<p><a href="/periodical">返回期刊管理首页</a></p>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+</head>
+<body>
+<h2>用户注册</h2>
+
+<p th:if="${message}" th:text="${message}"></p>
+
+<form th:action="@{/user/register}" method="post">
+    <label>
+        注册类型：
+        <select name="role" required>
+            <option value="TEACHER">教师注册（工号）</option>
+            <option value="STUDENT">学生注册（借书证号）</option>
+        </select>
+    </label>
+    <br>
+    <label>
+        工号/借书证号：
+        <input type="text" name="accountId" required>
+    </label>
+    <br>
+    <label>
+        密码：
+        <input type="password" name="password" required>
+    </label>
+    <br>
+    <label>
+        重复密码：
+        <input type="password" name="confirmPassword" required>
+    </label>
+    <br>
+    <button type="submit">提交注册</button>
+</form>
+
+<a th:href="@{/user}">返回用户管理目录</a>
+</body>
+</html>

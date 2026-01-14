@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发布公告</title>
+</head>
+<body>
+<h2>公告栏</h2>
+
+<p th:if="${announceMessage}" th:text="${announceMessage}"></p>
+<p th:if="${announceError}" th:text="${announceError}"></p>
+
+<div>
+    <h3>发布新公告</h3>
+    <p>仅管理员（教师）可发布公告。</p>
+    <form th:action="@{/web/announce}" method="post">
+        <label>
+            标题：
+            <input type="text" name="title" required>
+        </label>
+        <br>
+        <label>
+            内容：
+            <textarea name="content" rows="4" cols="40" required></textarea>
+        </label>
+        <br>
+        <button type="submit" th:disabled="${role != 'TEACHER' && role != 'ADMIN'}">发布公告</button>
+    </form>
+</div>
+
+<h3>历史公告</h3>
+<table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+    <tr>
+        <th>标题</th>
+        <th>内容</th>
+        <th>发布人</th>
+        <th>发布时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${announcements == null || announcements.isEmpty()}">
+        <td colspan="4">暂无公告。</td>
+    </tr>
+    <tr th:each="item : ${announcements}">
+        <td th:text="${item.title}"></td>
+        <td th:text="${item.content}"></td>
+        <td th:text="${item.publisher}"></td>
+        <td th:text="${item.createdAt}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/web}">返回目录</a>
+</body>
+</html>

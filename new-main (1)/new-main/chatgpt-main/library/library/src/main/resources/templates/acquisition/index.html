@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>采访管理目录</title>
+</head>
+<body>
+
+<h2>采访子系统</h2>
+
+<ul>
+    <li><a th:href="@{/acquisition/collect}">采访收集</a></li>
+    <li><a th:href="@{/acquisition/order}">订购新书</a></li>
+    <li><a th:href="@{/acquisition/verify}">验收新书</a></li>
+    <li><a th:href="@{/acquisition/modify}">修改订单</a></li>
+    <li><a th:href="@{/acquisition/return}">退货</a></li>
+</ul>
+
+<a th:href="@{/}">返回首页</a>
+
+</body>
+</html>

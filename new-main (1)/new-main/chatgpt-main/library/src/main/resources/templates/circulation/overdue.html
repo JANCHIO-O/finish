@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>超期处理</title>
+    <style>body{margin:50px;font-size:16px;} table{border-collapse: collapse;margin-top:20px;} td,th{border:1px solid #ccc;padding:8px;}</style>
+</head>
+<body>
+<h2>超期借阅记录</h2>
+<hr>
+<table>
+    <thead><tr><<th>流通编号</</th><<th>图书编号</</th><<th>图书名称</</th><<th>超期天数</</th><<th>罚金(元)</</th></tr></thead>
+    <tbody th:each="item:${overdueList}">
+    <tr><td th:text="${item.flowId}"></td><td th:text="${item.bookId}"></td><td th:text="${item.title}"></td><td th:text="${item.overdueDays}"></td><td th:text="${item.penalty}"></td></tr>
+    </tbody>
+</table>
+<br>
+<a href="/circulation">← 返回流通菜单</a> <!-- 修复路径 -->
+</body>
+</html>

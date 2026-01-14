@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>直接编目</title>
+</head>
+<body>
+
+<h2>直接编目（自动查重）</h2>
+
+<p style="color:red;" th:text="${error}"></p>
+
+<form action="/catalog/direct/submit" method="post">
+
+    <p>
+        ISBN：
+        <input type="text" name="isbn" th:value="${isbn}" readonly>
+    </p>
+
+    <p>
+        书名：
+        <input type="text" name="bookName" th:value="${bookName}" readonly>
+    </p>
+
+    <p>
+        分类号：
+        <input type="text" name="classNo" required>
+    </p>
+
+    <p>
+        编目员：
+        <input type="text" name="cataloger">
+    </p>
+
+    <button type="submit">确认编目</button>
+
+</form>
+
+<p>
+    <a href="/catalog/pending">返回待编书目</a>
+</p>
+
+</body>
+</html>

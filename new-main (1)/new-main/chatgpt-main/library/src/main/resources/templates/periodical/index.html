@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>期刊管理目录</title>
+</head>
+<body>
+
+<h2>期刊子系统</h2>
+
+<ul>
+    <li><a th:href="@{/periodical/visit}">期刊采访</a></li>
+    <li><a th:href="@{/periodical/order}">期刊订购</a></li>
+    <li><a th:href="@{/periodical/verify}">期刊验收</a></li>
+    <li><a th:href="@{/periodical/bind}">期刊装订</a></li>
+    <li><a th:href="@{/periodical/query}">期刊查询</a></li>
+</ul>
+
+<a th:href="@{/}">返回首页</a>
+
+</body>
+</html>

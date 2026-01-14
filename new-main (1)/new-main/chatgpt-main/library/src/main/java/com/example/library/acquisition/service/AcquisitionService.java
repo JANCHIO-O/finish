@@ -97,8 +97,8 @@ public class AcquisitionService {
         if (STATUS_SUCCESS.equals(status) && order.getQuantity().equals(receivedQuantity)) {
             String checkId = generateAcceptanceId();
             Date date = Date.valueOf(LocalDate.now());
-            AcceptanceRecord record = new AcceptanceRecord(checkId, order.getTitle(), order.getIsbn(), order.getPublisher(),
-                    order.getDocType(), checker, date);
+            AcceptanceRecord record = new AcceptanceRecord(checkId, order.getTitle(), order.getAuthor(), order.getIsbn(),
+                    order.getPublisher(), order.getDocType(), checker, date);
             acceptanceRecordRepository.save(record);
             order.setStatus(STATUS_SUCCESS);
             acquisitionOrderRepository.save(order);

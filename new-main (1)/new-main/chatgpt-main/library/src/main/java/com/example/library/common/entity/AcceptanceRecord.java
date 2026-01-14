@@ -13,6 +13,7 @@ public class AcceptanceRecord {
     private String checkId;
 
     private String title;
+    private String author;
     private String isbn;
     private String publisher;
     private String docType;
@@ -24,9 +25,10 @@ public class AcceptanceRecord {
     }
 
     // 构造函数
-    public AcceptanceRecord(String checkId, String title, String isbn, String publisher, String docType, String checker, Date publishDate) {
+    public AcceptanceRecord(String checkId, String title, String author, String isbn, String publisher, String docType, String checker, Date publishDate) {
         this.checkId = checkId;
         this.title = title;
+        this.author = author;
         this.isbn = isbn;
         this.publisher = publisher;
         this.docType = docType;
@@ -49,6 +51,14 @@ public class AcceptanceRecord {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getIsbn() {

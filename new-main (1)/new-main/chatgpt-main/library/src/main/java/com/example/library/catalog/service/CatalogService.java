@@ -50,12 +50,12 @@ public class CatalogService {
 
     /** 4.1 手动添加到验收清单（现在就写 acceptance_record） */
     @Transactional
-    public void addAcceptanceRecordManually(String title, String isbn, String publisher,
+    public void addAcceptanceRecordManually(String title, String author, String isbn, String publisher,
                                             String docType, String checker, Date publishDate) {
 
         String checkId = generateCheckId10();
         AcceptanceRecord record = new AcceptanceRecord(
-                checkId, title, isbn, publisher, docType, checker, publishDate
+                checkId, title, author, isbn, publisher, docType, checker, publishDate
         );
         acceptanceRepo.save(record);
     }
@@ -70,7 +70,8 @@ public class CatalogService {
      * - 若不存在：写入编目清单，并从验收清单删掉，返回 OK
      */
     @Transactional
-    public String directCatalogAndRemovePending(String isbn, String bookName, String cataloger) {
+    public String directCatalogAndRemovePending(String isbn, String bookName, String author,
+                                                String publisher, String docType, String cataloger) {
 
         // 如果流通库已存在：直接从验收清单移除
         if (existsInCirculationByIsbn(isbn)) {
@@ -81,7 +82,7 @@ public class CatalogService {
         // 写入编目清单
         String bookId = generateBookId8();
         CatalogBookEntity entity = new CatalogBookEntity(
-                bookId, isbn, bookName, cataloger, LocalDate.now()
+                bookId, isbn, bookName, author, publisher, docType, cataloger, LocalDate.now()
         );
         catalogRepo.save(entity);
 
@@ -124,9 +125,9 @@ public class CatalogService {
             cb.setBookId(b.getBookId());
             cb.setTitle(b.getBookName());
             cb.setCatalogDate(Date.valueOf(LocalDate.now()));
-            cb.setAuthor("未知");
-            cb.setPublisher("未知");
-            cb.setDocType("未知");
+            cb.setAuthor(b.getAuthor() == null || b.getAuthor().isBlank() ? "未知" : b.getAuthor());
+            cb.setPublisher(b.getPublisher() == null || b.getPublisher().isBlank() ? "未知" : b.getPublisher());
+            cb.setDocType(b.getDocType() == null || b.getDocType().isBlank() ? "未知" : b.getDocType());
             circulationRepo.save(cb);
         }
 
@@ -222,5 +223,13 @@ public class CatalogService {
     private String generateDamageRecordId8() {
         long count = damageRecordRepo.count() + 1;
         return String.format("D%07d", count); // 8位
+    }
+
+    public AcceptanceRecord findAcceptanceByIsbn(String isbn) {
+        List<AcceptanceRecord> records = acceptanceRepo.findByIsbn(isbn);
+        if (records.isEmpty()) {
+            return null;
+        }
+        return records.get(0);
     }
 }

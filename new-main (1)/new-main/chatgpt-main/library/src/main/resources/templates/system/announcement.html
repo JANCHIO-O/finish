@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>公告栏</title>
+</head>
+<body>
+
+<h2>公告栏：借阅规则</h2>
+
+<table border="1" cellspacing="0" cellpadding="6">
+  <thead>
+  <tr>
+    <th>读者类型</th>
+    <th>最大可借天数</th>
+    <th>最大可借数量</th>
+    <th>逾期惩罚措施</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:if="${#lists.isEmpty(policies)}">
+    <td colspan="4">暂无规则信息</td>
+  </tr>
+  <tr th:each="policy : ${policies}">
+    <td th:text="${policy.role == 'TEACHER' ? '教师' : '学生'}"></td>
+    <td th:text="${policy.maxBorrowDays}"></td>
+    <td th:text="${policy.maxBorrowCount}"></td>
+    <td th:text="${policy.overduePenalty}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<a th:href="@{/system}">返回系统维护首页</a>
+
+</body>
+</html>

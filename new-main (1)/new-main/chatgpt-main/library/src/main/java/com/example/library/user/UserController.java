@@ -4,6 +4,7 @@ import com.example.library.common.entity.ReaderInfo;
 import com.example.library.common.entity.UserAccount;
 import com.example.library.common.repository.ReaderInfoRepository;
 import com.example.library.common.repository.UserAccountRepository;
+import com.example.library.system.service.SystemLogService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +23,14 @@ public class UserController {
 
     private final UserAccountRepository userAccountRepository;
     private final ReaderInfoRepository readerInfoRepository;
+    private final SystemLogService systemLogService;
 
-    public UserController(UserAccountRepository userAccountRepository, ReaderInfoRepository readerInfoRepository) {
+    public UserController(UserAccountRepository userAccountRepository,
+                          ReaderInfoRepository readerInfoRepository,
+                          SystemLogService systemLogService) {
         this.userAccountRepository = userAccountRepository;
         this.readerInfoRepository = readerInfoRepository;
+        this.systemLogService = systemLogService;
     }
 
     @GetMapping
@@ -66,6 +71,7 @@ public class UserController {
         if (account.isPresent() && account.get().getPassword().equals(password)) {
             session.setAttribute("currentUserId", accountId);
             session.setAttribute("currentUserRole", role);
+            systemLogService.log("用户", "登录", "用户账号 " + accountId + " 登录个人信息维护模块。");
             redirectAttributes.addFlashAttribute("message", "登录成功，请维护个人信息。");
             return "redirect:/user/info";
         }
@@ -121,6 +127,7 @@ public class UserController {
         info.setGender(gender);
         info.setMobile(mobile);
         readerInfoRepository.save(info);
+        systemLogService.log("用户", "修改", "用户账号 " + accountId + " 更新个人信息。");
         redirectAttributes.addFlashAttribute("message", "个人信息已更新。");
         return "redirect:/user/info";
     }
@@ -148,6 +155,7 @@ public class UserController {
         if (infoExists) {
             readerInfoRepository.deleteById(accountId);
         }
+        systemLogService.log("管理员", "删除", "管理员删除账号 " + accountId + "，并清理用户信息记录。");
         redirectAttributes.addFlashAttribute("message", "账号已删除，并同步清理用户注册表与用户信息表。");
         return "redirect:/user/manage";
     }

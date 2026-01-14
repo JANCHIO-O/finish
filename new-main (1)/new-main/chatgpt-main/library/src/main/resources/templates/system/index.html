@@ -2,20 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>系统维护目录</title>
+  <title>系统维护子系统</title>
 </head>
 <body>
 
 <h2>系统维护子系统</h2>
+<p>当前管理员：<span th:text="${adminId}"></span></p>
 
 <ul>
-  <li><a th:href="@{/system/backup}">数据备份与恢复</a></li>
-  <li><a th:href="@{/system/params}">系统参数设置</a></li>
-  <li><a th:href="@{/system/log}">日志管理</a></li>
-  <li><a th:href="@{/system/upgrade}">系统升级</a></li>
-  <li><a th:href="@{/system/authority}">权限维护</a></li>
+  <li><a th:href="@{/system/users(role='TEACHER')}">用户查询（教师/学生账号）</a></li>
+  <li><a th:href="@{/system/announcement}">公告栏（借阅规则）</a></li>
+  <li><a th:href="@{/system/log}">系统维护日志</a></li>
 </ul>
 
+<a th:href="@{/system/logout}">退出登录</a>
 <a th:href="@{/}">返回首页</a>
 
 </body>

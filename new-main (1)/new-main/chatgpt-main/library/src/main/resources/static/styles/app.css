@@ -1,0 +1,191 @@
+:root {
+  color-scheme: light;
+  --bg: #f6f8fb;
+  --bg-accent: #eef2f7;
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --primary-soft: rgba(37, 99, 235, 0.12);
+  --border: #e5e7eb;
+  --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  font-family: "Inter", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 32px 24px 48px;
+  background: radial-gradient(circle at top left, #ffffff 0%, var(--bg) 48%, var(--bg-accent) 100%);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+body > * {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1, h2, h3 {
+  margin: 0 0 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+h1::before,
+h2::before {
+  content: "📚";
+  margin-right: 8px;
+}
+
+p {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+li a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+li a::before {
+  content: "✨";
+  font-size: 16px;
+}
+
+li a:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 18px 45px rgba(37, 99, 235, 0.15);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 12px 0 24px;
+}
+
+form {
+  background: var(--surface);
+  padding: 20px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin: 16px 0 24px;
+}
+
+label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 8px 0 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 14px;
+}
+
+button,
+input[type="submit"],
+input[type="button"] {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  opacity: 0.92;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin: 16px 0 24px;
+}
+
+table th,
+table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+table th {
+  background: var(--primary-soft);
+  color: var(--text);
+}
+
+.card {
+  background: var(--surface);
+  padding: 20px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin: 16px 0 24px;
+}
+
+.notice {
+  background: var(--primary-soft);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: var(--text);
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 24px 16px 32px;
+  }
+
+  ul {
+    grid-template-columns: 1fr;
+  }
+}

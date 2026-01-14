@@ -3,14 +3,26 @@ package com.example.library.circulation.service.impl;
 import com.example.library.circulation.dto.BorrowRecordDto;
 import com.example.library.circulation.dto.CirculationBookDto;
 import com.example.library.circulation.dto.NoticeDto;
-import com.example.library.circulation.entity.*;
-import com.example.library.circulation.repository.*;
+import com.example.library.circulation.entity.NoticeEntity;
+import com.example.library.circulation.entity.ReservationEntity;
+import com.example.library.circulation.repository.BorrowRecordMapper;
+import com.example.library.circulation.repository.CirculationBookMapper;
+import com.example.library.circulation.repository.NoticeRepository;
+import com.example.library.circulation.repository.ReaderInfoMapper;
+import com.example.library.circulation.repository.ReservationRepository;
 import com.example.library.circulation.service.CirculationService;
+import com.example.library.common.entity.BorrowRecord;
+import com.example.library.common.entity.CirculationBook;
+import com.example.library.common.entity.ReaderInfo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CirculationServiceImpl implements CirculationService {
@@ -33,13 +45,13 @@ public class CirculationServiceImpl implements CirculationService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public String borrowBook(String cardNo, String bookId) {
-        Optional<ReaderInfoEntity> readerOpt = readerInfoRepository.findById(cardNo);
+        Optional<ReaderInfo> readerOpt = readerInfoRepository.findById(cardNo);
         if (readerOpt.isEmpty()) return "借书证号不存在！";
         // 修复：图书主键是ISBN，用findByBookId查询，不是findById
-        Optional<CirculationBookEntity> bookOpt = circulationBookRepository.findByBookId(bookId);
+        Optional<CirculationBook> bookOpt = circulationBookRepository.findByBookId(bookId);
         if (bookOpt.isEmpty()) return "图书编号不存在！";
 
-        CirculationBookEntity book = bookOpt.get();
+        CirculationBook book = bookOpt.get();
         if (book.getStatus() == 0) return "图书已借出，无法借阅！";
 
         // 预约人专属借阅权限
@@ -51,14 +63,14 @@ public class CirculationServiceImpl implements CirculationService {
         }
 
         // 重复借阅判断：有借阅未还书 禁止借阅
-        List<BorrowRecordEntity> borrowList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "借阅");
-        List<BorrowRecordEntity> returnList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "还书");
+        List<BorrowRecord> borrowList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "借阅");
+        List<BorrowRecord> returnList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "还书");
         if (borrowList != null && !borrowList.isEmpty() && (returnList == null || returnList.isEmpty())) {
             return "您已借阅过该图书，归还后才能再次借阅！";
         }
 
         // 生成借阅记录 - 补全所有字段，适配完整DTO
-        BorrowRecordEntity record = new BorrowRecordEntity();
+        BorrowRecord record = new BorrowRecord();
         record.setFlowId(UUID.randomUUID().toString().replace("-","").substring(0,10));
         record.setBookId(bookId);
         record.setIsbn(book.getIsbn());
@@ -67,7 +79,7 @@ public class CirculationServiceImpl implements CirculationService {
         record.setEventType("借阅");
         record.setCardNo(cardNo);
         record.setName(readerOpt.get().getName());
-        record.setFlowDate(new Date());
+        record.setFlowDate(new java.sql.Date(System.currentTimeMillis()));
         borrowRecordRepository.save(record);
 
         // 更新图书状态+清空本人预约记录
@@ -91,21 +103,21 @@ public class CirculationServiceImpl implements CirculationService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public String returnBook(String cardNo, String bookId) {
-        Optional<ReaderInfoEntity> readerOpt = readerInfoRepository.findById(cardNo);
+        Optional<ReaderInfo> readerOpt = readerInfoRepository.findById(cardNo);
         if (readerOpt.isEmpty()) return "借书证号不存在！";
         // 修复：图书主键是ISBN，用findByBookId查询
-        Optional<CirculationBookEntity> bookOpt = circulationBookRepository.findByBookId(bookId);
+        Optional<CirculationBook> bookOpt = circulationBookRepository.findByBookId(bookId);
         if (bookOpt.isEmpty()) return "图书编号不存在！";
 
-        CirculationBookEntity book = bookOpt.get();
+        CirculationBook book = bookOpt.get();
         if (book.getStatus() == 1) return "图书未被借出，无需归还！";
 
-        List<BorrowRecordEntity> borrowList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "借阅");
+        List<BorrowRecord> borrowList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "借阅");
         if (borrowList == null || borrowList.isEmpty()) return "无此图书的借阅记录！";
-        BorrowRecordEntity borrowEntity = borrowList.get(0);
+        BorrowRecord borrowEntity = borrowList.get(0);
 
         // 生成还书记录 - 补全所有字段
-        BorrowRecordEntity returnRecord = new BorrowRecordEntity();
+        BorrowRecord returnRecord = new BorrowRecord();
         returnRecord.setFlowId(UUID.randomUUID().toString().replace("-","").substring(0,10));
         returnRecord.setBookId(bookId);
         returnRecord.setIsbn(book.getIsbn());
@@ -114,12 +126,12 @@ public class CirculationServiceImpl implements CirculationService {
         returnRecord.setEventType("还书");
         returnRecord.setCardNo(cardNo);
         returnRecord.setName(readerOpt.get().getName());
-        returnRecord.setFlowDate(new Date());
-        returnRecord.setReturnDate(new Date());
+        returnRecord.setFlowDate(new java.sql.Date(System.currentTimeMillis()));
+        returnRecord.setReturnDate(new java.sql.Date(System.currentTimeMillis()));
 
         // 超期计算
         long borrowTime = borrowEntity.getFlowDate().getTime();
-        long nowTime = new Date().getTime();
+        long nowTime = System.currentTimeMillis();
         long daysDiff = (nowTime - borrowTime) / (1000 * 60 * 60 * 24);
         int overdueDays = daysDiff > BORROW_FREE_DAYS ? (int) (daysDiff - BORROW_FREE_DAYS) : 0;
         double penalty = overdueDays * PENALTY_PER_DAY;
@@ -155,13 +167,13 @@ public class CirculationServiceImpl implements CirculationService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public String reserveBook(String cardNo, String bookId) {
-        Optional<ReaderInfoEntity> readerOpt = readerInfoRepository.findById(cardNo);
+        Optional<ReaderInfo> readerOpt = readerInfoRepository.findById(cardNo);
         if (readerOpt.isEmpty()) return "借书证号不存在！";
         // 修复：图书主键是ISBN，用findByBookId查询
-        Optional<CirculationBookEntity> bookOpt = circulationBookRepository.findByBookId(bookId);
+        Optional<CirculationBook> bookOpt = circulationBookRepository.findByBookId(bookId);
         if (bookOpt.isEmpty()) return "图书编号不存在！";
 
-        CirculationBookEntity book = bookOpt.get();
+        CirculationBook book = bookOpt.get();
         if (book.getStatus() == 1) return "图书可直接借阅，无需预约！";
         if (book.getStatus() == 2) return "图书已被他人预约，无法重复预约！";
 
@@ -193,9 +205,9 @@ public class CirculationServiceImpl implements CirculationService {
 
     @Override
     public List<BorrowRecordDto> getBorrowRecords(String cardNo) {
-        List<BorrowRecordEntity> entityList = borrowRecordRepository.findByCardNo(cardNo);
+        List<BorrowRecord> entityList = borrowRecordRepository.findByCardNo(cardNo);
         List<BorrowRecordDto> dtoList = new ArrayList<>();
-        for (BorrowRecordEntity entity : entityList) {
+        for (BorrowRecord entity : entityList) {
             BorrowRecordDto dto = new BorrowRecordDto();
             // 修复：补全DTO所有字段赋值，匹配完整实体
             dto.setFlowId(entity.getFlowId());
@@ -218,9 +230,9 @@ public class CirculationServiceImpl implements CirculationService {
     @Override
     public List<BorrowRecordDto> getOverdueRecords() {
         Date freeDaysAgo = new Date(System.currentTimeMillis() - (long)BORROW_FREE_DAYS * 24 * 60 * 60 * 1000);
-        List<BorrowRecordEntity> entityList = borrowRecordRepository.findByReturnDateIsNullAndFlowDateBefore(freeDaysAgo);
+        List<BorrowRecord> entityList = borrowRecordRepository.findByReturnDateIsNullAndFlowDateBefore(freeDaysAgo);
         List<BorrowRecordDto> dtoList = new ArrayList<>();
-        for (BorrowRecordEntity entity : entityList) {
+        for (BorrowRecord entity : entityList) {
             BorrowRecordDto dto = new BorrowRecordDto();
             dto.setFlowId(entity.getFlowId());
             dto.setBookId(entity.getBookId());
@@ -230,7 +242,7 @@ public class CirculationServiceImpl implements CirculationService {
             dto.setCardNo(entity.getCardNo());
             dto.setName(entity.getName());
             dto.setFlowDate(entity.getFlowDate());
-            long daysDiff = (new Date().getTime() - entity.getFlowDate().getTime()) / (1000 * 60 * 60 * 24);
+            long daysDiff = (System.currentTimeMillis() - entity.getFlowDate().getTime()) / (1000 * 60 * 60 * 24);
             int overdueDays = (int) (daysDiff - BORROW_FREE_DAYS);
             dto.setOverdueDays(overdueDays);
             dto.setPenalty(overdueDays * PENALTY_PER_DAY);
@@ -246,9 +258,9 @@ public class CirculationServiceImpl implements CirculationService {
 
     @Override
     public List<CirculationBookDto> getAvailableBooks() {
-        List<CirculationBookEntity> entityList = circulationBookRepository.findAll();
+        List<CirculationBook> entityList = circulationBookRepository.findAll();
         List<CirculationBookDto> dtoList = new ArrayList<>();
-        for (CirculationBookEntity entity : entityList) {
+        for (CirculationBook entity : entityList) {
             CirculationBookDto dto = new CirculationBookDto();
             dto.setBookId(entity.getBookId());
             dto.setIsbn(entity.getIsbn());

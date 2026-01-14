@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.sql.Date;
+
 @SuppressWarnings("ALL")
 @Entity
 @Table(name = "borrow_record")
@@ -19,14 +21,17 @@ public class BorrowRecord {
     private String cardNo;
     private String name;
     private String bookId;
-    private java.sql.Date flowDate;
+    private Date flowDate;
+    private Date returnDate;
+    private Integer overdueDays;
+    private Double penalty;
 
     // 无参构造函数
     public BorrowRecord() {
     }
 
     // 构造函数
-    public BorrowRecord(String flowId, String isbn, String title, String author, String eventType, String cardNo, String name, String bookId, java.sql.Date flowDate) {
+    public BorrowRecord(String flowId, String isbn, String title, String author, String eventType, String cardNo, String name, String bookId, Date flowDate) {
         this.flowId = flowId;
         this.isbn = isbn;
         this.title = title;
@@ -103,11 +108,35 @@ public class BorrowRecord {
         this.bookId = bookId;
     }
 
-    public java.sql.Date getFlowDate() {
+    public Date getFlowDate() {
         return flowDate;
     }
 
-    public void setFlowDate(java.sql.Date flowDate) {
+    public void setFlowDate(Date flowDate) {
         this.flowDate = flowDate;
+    }
+
+    public Date getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public Integer getOverdueDays() {
+        return overdueDays;
+    }
+
+    public void setOverdueDays(Integer overdueDays) {
+        this.overdueDays = overdueDays;
+    }
+
+    public Double getPenalty() {
+        return penalty;
+    }
+
+    public void setPenalty(Double penalty) {
+        this.penalty = penalty;
     }
 }

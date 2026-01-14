@@ -35,6 +35,7 @@ import com.example.library.circulation.dto.NoticeDto;
 import com.example.library.circulation.service.CirculationService;
 import com.example.library.common.entity.UserAccount;
 import com.example.library.common.repository.UserAccountRepository;
+import com.example.library.system.service.SystemLogService;
 import jakarta.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -51,11 +52,14 @@ import java.util.Optional;
 public class CirculationController {
     private final CirculationService circulationService;
     private final UserAccountRepository userAccountRepository;
+    private final SystemLogService systemLogService;
 
     public CirculationController(CirculationService circulationService,
-                                 UserAccountRepository userAccountRepository) {
+                                 UserAccountRepository userAccountRepository,
+                                 SystemLogService systemLogService) {
         this.circulationService = circulationService;
         this.userAccountRepository = userAccountRepository;
+        this.systemLogService = systemLogService;
     }
 
     @GetMapping("/login")
@@ -73,6 +77,7 @@ public class CirculationController {
         Optional<UserAccount> account = userAccountRepository.findByAccountIdAndRole(accountId, "STUDENT");
         if (account.isPresent() && account.get().getPassword().equals(password)) {
             session.setAttribute("circulationAccountId", accountId);
+            systemLogService.log("用户", "登录", "学生账号 " + accountId + " 登录流通管理子系统。");
             redirectAttributes.addFlashAttribute("message", "登录成功，欢迎进入流通管理子系统。");
             if (target != null && !target.isBlank()) {
                 return "redirect:" + target;

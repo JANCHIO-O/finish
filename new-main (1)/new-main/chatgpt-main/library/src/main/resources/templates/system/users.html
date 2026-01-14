@@ -2,37 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>用户账号查询</title>
+  <title>用户信息维护</title>
 </head>
 <body>
 
-<h2>用户账号查询</h2>
+<h2>用户信息维护</h2>
 
-<form th:action="@{/system/users}" method="get">
-  <label>
-    查询类型：
-    <select name="role">
-      <option value="TEACHER" th:selected="${selectedRole == 'TEACHER'}">教师账号</option>
-      <option value="STUDENT" th:selected="${selectedRole == 'STUDENT'}">学生账号</option>
-    </select>
-  </label>
-  <button type="submit">查询</button>
-</form>
+<p>仅展示非管理员账号信息。</p>
+
+<p th:if="${message}" th:text="${message}"></p>
 
 <table border="1" cellspacing="0" cellpadding="6">
   <thead>
   <tr>
     <th>账号 ID</th>
     <th>账号类型</th>
+    <th>密码</th>
+    <th>修改密码</th>
   </tr>
   </thead>
   <tbody>
   <tr th:if="${#lists.isEmpty(accounts)}">
-    <td colspan="2">暂无数据</td>
+    <td colspan="4">暂无数据</td>
   </tr>
   <tr th:each="account : ${accounts}">
     <td th:text="${account.accountId}"></td>
     <td th:text="${account.role}"></td>
+    <td th:text="${account.password}"></td>
+    <td>
+      <form th:action="@{/system/users/password}" method="post">
+        <input type="hidden" name="accountId" th:value="${account.accountId}">
+        <input type="text" name="newPassword" placeholder="输入新密码">
+        <button type="submit">修改</button>
+      </form>
+    </td>
   </tr>
   </tbody>
 </table>

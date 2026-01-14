@@ -69,43 +69,43 @@ public class LibraryApplication implements CommandLineRunner {
         // 插入一些图书流通库数据
         if (!circulationBookRepository.existsById("1234567890123")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890123", "B001", "Java编程", "2026-01-12", "作者1", "出版社1", "图书"));
+                    "1234567890123", "B001", "Java编程", Date.valueOf("2026-01-12"), "作者1", "出版社1", "图书"));
         }
         if (!circulationBookRepository.existsById("1234567890124")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890124", "B002", "Spring入门", "2026-01-12", "作者2", "出版社2", "教程"));
+                    "1234567890124", "B002", "Spring入门", Date.valueOf("2026-01-12"), "作者2", "出版社2", "教程"));
         }
         if (!circulationBookRepository.existsById("1234567890126")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890126", "B003", "数据结构", "2026-01-12", "作者3", "出版社3", "教材"));
+                    "1234567890126", "B003", "数据结构", Date.valueOf("2026-01-12"), "作者3", "出版社3", "教材"));
         }
         if (!circulationBookRepository.existsById("1234567890127")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890127", "B004", "数据库系统", "2026-01-12", "作者4", "出版社4", "教材"));
+                    "1234567890127", "B004", "数据库系统", Date.valueOf("2026-01-12"), "作者4", "出版社4", "教材"));
         }
         if (!circulationBookRepository.existsById("1234567890128")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890128", "B005", "计算机网络", "2026-01-12", "作者5", "出版社5", "教材"));
+                    "1234567890128", "B005", "计算机网络", Date.valueOf("2026-01-12"), "作者5", "出版社5", "教材"));
         }
         if (!circulationBookRepository.existsById("1234567890129")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890129", "B006", "操作系统", "2026-01-12", "作者6", "出版社6", "教材"));
+                    "1234567890129", "B006", "操作系统", Date.valueOf("2026-01-12"), "作者6", "出版社6", "教材"));
         }
         if (!circulationBookRepository.existsById("1234567890130")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890130", "B007", "软件工程", "2026-01-12", "作者7", "出版社7", "图书"));
+                    "1234567890130", "B007", "软件工程", Date.valueOf("2026-01-12"), "作者7", "出版社7", "图书"));
         }
         if (!circulationBookRepository.existsById("1234567890131")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890131", "B008", "人工智能导论", "2026-01-12", "作者8", "出版社8", "图书"));
+                    "1234567890131", "B008", "人工智能导论", Date.valueOf("2026-01-12"), "作者8", "出版社8", "图书"));
         }
         if (!circulationBookRepository.existsById("1234567890132")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890132", "B009", "概率论与数理统计", "2026-01-12", "作者9", "出版社9", "教材"));
+                    "1234567890132", "B009", "概率论与数理统计", Date.valueOf("2026-01-12"), "作者9", "出版社9", "教材"));
         }
         if (!circulationBookRepository.existsById("1234567890133")) {
             circulationBookRepository.save(new CirculationBook(
-                    "1234567890133", "B010", "线性代数", "2026-01-12", "作者10", "出版社10", "教材"));
+                    "1234567890133", "B010", "线性代数", Date.valueOf("2026-01-12"), "作者10", "出版社10", "教材"));
         }
 
         // 插入一些读者信息初始数据

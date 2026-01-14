@@ -123,7 +123,7 @@ public class CatalogService {
             cb.setIsbn(b.getIsbn());        // 通常是主键
             cb.setBookId(b.getBookId());
             cb.setTitle(b.getBookName());
-            cb.setCatalogDate(LocalDate.now().toString());
+            cb.setCatalogDate(Date.valueOf(LocalDate.now()));
             cb.setAuthor("未知");
             cb.setPublisher("未知");
             cb.setDocType("未知");

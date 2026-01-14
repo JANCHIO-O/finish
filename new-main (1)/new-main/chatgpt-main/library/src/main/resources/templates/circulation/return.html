@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>还书处理</title>
@@ -9,7 +9,7 @@
 <h2>图书还书</h2>
 <hr>
 <form id="returnForm">
-    借书证号：<input type="text" id="cardNo" required placeholder="请输入借书证号"><br><br>
+    借书证号：<input type="text" id="cardNo" required placeholder="请输入借书证号" th:value="${cardNo}"><br><br>
     图书编号：<input type="text" id="bookId" required placeholder="请输入图书编号"><br><br>
     <input type="submit" value="确认还书">
     <input type="reset" value="重置">

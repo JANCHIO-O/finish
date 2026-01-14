@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>系统维护日志</title>
+</head>
+<body>
+
+<h2>系统维护日志</h2>
+
+<table border="1" cellspacing="0" cellpadding="6">
+  <thead>
+  <tr>
+    <th>操作人类型</th>
+    <th>操作类型</th>
+    <th>操作时间</th>
+    <th>描述</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:if="${#lists.isEmpty(logs)}">
+    <td colspan="4">暂无日志记录</td>
+  </tr>
+  <tr th:each="log : ${logs}">
+    <td th:text="${log.operatorType}"></td>
+    <td th:text="${log.actionType}"></td>
+    <td th:text="${#temporals.format(log.actionTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    <td th:text="${log.description}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<a th:href="@{/system}">返回系统维护首页</a>
+
+</body>
+</html>

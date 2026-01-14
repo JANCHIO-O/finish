@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>系统维护登录</title>
+</head>
+<body>
+
+<h2>系统维护登录</h2>
+
+<p th:if="${message}" th:text="${message}"></p>
+
+<form th:action="@{/system/login}" method="post">
+  <label>
+    管理员账号：
+    <input type="text" name="accountId" required>
+  </label>
+  <br>
+  <label>
+    密码：
+    <input type="password" name="password" required>
+  </label>
+  <br>
+  <button type="submit">登录</button>
+</form>
+
+<a th:href="@{/}">返回首页</a>
+
+</body>
+</html>

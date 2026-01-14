@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>用户账号查询</title>
+</head>
+<body>
+
+<h2>用户账号查询</h2>
+
+<form th:action="@{/system/users}" method="get">
+  <label>
+    查询类型：
+    <select name="role">
+      <option value="TEACHER" th:selected="${selectedRole == 'TEACHER'}">教师账号</option>
+      <option value="STUDENT" th:selected="${selectedRole == 'STUDENT'}">学生账号</option>
+    </select>
+  </label>
+  <button type="submit">查询</button>
+</form>
+
+<table border="1" cellspacing="0" cellpadding="6">
+  <thead>
+  <tr>
+    <th>账号 ID</th>
+    <th>账号类型</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:if="${#lists.isEmpty(accounts)}">
+    <td colspan="2">暂无数据</td>
+  </tr>
+  <tr th:each="account : ${accounts}">
+    <td th:text="${account.accountId}"></td>
+    <td th:text="${account.role}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<a th:href="@{/system}">返回系统维护首页</a>
+
+</body>
+</html>

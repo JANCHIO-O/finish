@@ -7,18 +7,21 @@
 </head>
 <body>
 
-<h2>图书馆管理系统</h2>
+<section class="home-layout">
+    <h2>图书馆管理系统</h2>
+    <p class="home-welcome">欢迎使用图书馆管理系统，请选择需要进入的子系统。</p>
 
-<ul>
-    <li><a th:href="@{/acquisition}">采访管理</a></li>
-    <li><a th:href="@{/catalog}">编目管理</a></li>
-    <li><a th:href="@{/circulation}">流通管理</a></li>
-    <li><a th:href="@{/periodical}">期刊管理</a></li>
-    <li><a th:href="@{/statistics}">统计打印</a></li>
-    <li><a th:href="@{/web}">Web 查询</a></li>
-    <li><a th:href="@{/user}">用户管理</a></li>
-    <li><a th:href="@{/system}">系统维护</a></li>
-</ul>
+    <ul class="home-menu">
+        <li><a th:href="@{/user}">用户管理</a></li>
+        <li><a th:href="@{/acquisition}">采访管理</a></li>
+        <li><a th:href="@{/catalog}">编目管理</a></li>
+        <li><a th:href="@{/circulation}">流通管理</a></li>
+        <li><a th:href="@{/periodical}">期刊管理</a></li>
+        <li><a th:href="@{/statistics}">统计打印</a></li>
+        <li><a th:href="@{/web}">Web 查询</a></li>
+        <li><a th:href="@{/system}">系统维护</a></li>
+    </ul>
+</section>
 
 </body>
 </html>

@@ -31,6 +31,32 @@ body > * {
   margin-right: auto;
 }
 
+.home-layout {
+  text-align: center;
+}
+
+.home-welcome {
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.home-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 32px;
+}
+
+.home-menu li {
+  width: min(360px, 90vw);
+}
+
+.home-menu li a {
+  justify-content: center;
+  font-weight: 600;
+}
+
 h1, h2, h3 {
   margin: 0 0 16px;
   font-weight: 600;
@@ -140,6 +166,25 @@ button:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover {
   opacity: 0.92;
+}
+
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+  text-decoration: none;
+}
+
+.button-link:hover {
+  opacity: 0.92;
+  text-decoration: none;
 }
 
 table {

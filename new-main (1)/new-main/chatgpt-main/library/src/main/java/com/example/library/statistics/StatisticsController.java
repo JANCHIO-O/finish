@@ -22,7 +22,9 @@ public class StatisticsController {
     }
 
     @GetMapping
-    public String index() { return "statistics/index"; }
+    public String index() {
+        return "redirect:/statistics/stat";
+    }
 
     @GetMapping("/stat")
     public String stat(Model model) {

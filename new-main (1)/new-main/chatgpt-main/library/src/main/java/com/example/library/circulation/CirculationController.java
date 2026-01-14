@@ -102,8 +102,11 @@ public class CirculationController {
     // 流通子系统首页 - 匹配前端：/circulation
     @GetMapping("")
     public String index(HttpSession session, Model model) {
-        // 查询系统公告展示在首页
-        List<NoticeDto> notices = circulationService.getAllNotices();
+        String cardNo = (String) session.getAttribute("circulationAccountId");
+        // 查询与当前用户相关的公告展示在首页
+        List<NoticeDto> notices = cardNo == null || cardNo.isBlank()
+                ? List.of()
+                : circulationService.getValidNotices(cardNo);
         model.addAttribute("notices", notices);
         boolean hasNotices = notices != null && !notices.isEmpty();
         boolean showPopup = false;
@@ -183,7 +186,10 @@ public class CirculationController {
     // 个人公告与通知 - 匹配前端：/circulation/notice-manage
     @GetMapping("/notice-manage")
     public String myNotices(HttpSession session, Model model) {
-        String cardNo = (String) session.getAttribute("cardNo");
+        String cardNo = (String) session.getAttribute("circulationAccountId");
+        if (cardNo == null || cardNo.isBlank()) {
+            return "redirect:/circulation/login?target=/circulation/notice-manage";
+        }
         List<NoticeDto> noticeList = circulationService.getValidNotices(cardNo);
         model.addAttribute("noticeList", noticeList);
         return "circulation/notice";

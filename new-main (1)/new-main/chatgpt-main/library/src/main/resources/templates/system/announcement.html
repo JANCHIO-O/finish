@@ -2,34 +2,65 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>公告栏</title>
+  <title>系统详细信息</title>
     <link rel="stylesheet" href="/styles/app.css">
 </head>
 <body>
 
-<h2>公告栏：借阅规则</h2>
+<h2>系统详细信息</h2>
+<p th:if="${message}" th:text="${message}"></p>
 
-<table border="1" cellspacing="0" cellpadding="6">
-  <thead>
-  <tr>
-    <th>读者类型</th>
-    <th>最大可借天数</th>
-    <th>最大可借数量</th>
-    <th>逾期惩罚措施</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:if="${#lists.isEmpty(policies)}">
-    <td colspan="4">暂无规则信息</td>
-  </tr>
-  <tr th:each="policy : ${policies}">
-    <td th:text="${policy.role == 'TEACHER' ? '教师' : '学生'}"></td>
-    <td th:text="${policy.maxBorrowDays}"></td>
-    <td th:text="${policy.maxBorrowCount}"></td>
-    <td th:text="${policy.overduePenalty}"></td>
-  </tr>
-  </tbody>
-</table>
+<section>
+  <h3 th:text="${systemInfo.systemName}">系统名称</h3>
+  <p><strong>系统概述：</strong><span th:text="${systemInfo.overview}"></span></p>
+  <p><strong>核心功能：</strong><span th:text="${systemInfo.coreFunctions}"></span></p>
+  <p><strong>服务范围：</strong><span th:text="${systemInfo.serviceScope}"></span></p>
+  <p><strong>安全保障：</strong><span th:text="${systemInfo.securityGuarantee}"></span></p>
+  <p><strong>维护支持：</strong><span th:text="${systemInfo.maintenanceSupport}"></span></p>
+</section>
+
+<hr>
+
+<h3>修改系统信息</h3>
+<form th:action="@{/system/announcement}" method="post">
+  <div>
+    <label>
+      系统名称：
+      <input type="text" name="systemName" th:value="${systemInfo.systemName}" required>
+    </label>
+  </div>
+  <div>
+    <label>
+      系统概述：
+      <textarea name="overview" rows="3" cols="60" required th:text="${systemInfo.overview}"></textarea>
+    </label>
+  </div>
+  <div>
+    <label>
+      核心功能：
+      <textarea name="coreFunctions" rows="3" cols="60" required th:text="${systemInfo.coreFunctions}"></textarea>
+    </label>
+  </div>
+  <div>
+    <label>
+      服务范围：
+      <textarea name="serviceScope" rows="3" cols="60" required th:text="${systemInfo.serviceScope}"></textarea>
+    </label>
+  </div>
+  <div>
+    <label>
+      安全保障：
+      <textarea name="securityGuarantee" rows="3" cols="60" required th:text="${systemInfo.securityGuarantee}"></textarea>
+    </label>
+  </div>
+  <div>
+    <label>
+      维护支持：
+      <textarea name="maintenanceSupport" rows="3" cols="60" required th:text="${systemInfo.maintenanceSupport}"></textarea>
+    </label>
+  </div>
+  <button type="submit">保存修改</button>
+</form>
 
 <a th:href="@{/system}">返回系统维护首页</a>
 

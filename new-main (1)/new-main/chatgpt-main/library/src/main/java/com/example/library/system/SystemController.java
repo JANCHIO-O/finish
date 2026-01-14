@@ -2,9 +2,9 @@ package com.example.library.system;
 
 import com.example.library.common.entity.UserAccount;
 import com.example.library.common.repository.UserAccountRepository;
-import com.example.library.system.entity.SystemPolicy;
+import com.example.library.system.entity.SystemInfo;
 import com.example.library.system.repository.SystemLogRepository;
-import com.example.library.system.repository.SystemPolicyRepository;
+import com.example.library.system.repository.SystemInfoRepository;
 import com.example.library.system.service.SystemLogService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -23,16 +23,16 @@ import java.util.Optional;
 public class SystemController {
 
     private final UserAccountRepository userAccountRepository;
-    private final SystemPolicyRepository systemPolicyRepository;
+    private final SystemInfoRepository systemInfoRepository;
     private final SystemLogRepository systemLogRepository;
     private final SystemLogService systemLogService;
 
     public SystemController(UserAccountRepository userAccountRepository,
-                            SystemPolicyRepository systemPolicyRepository,
+                            SystemInfoRepository systemInfoRepository,
                             SystemLogRepository systemLogRepository,
                             SystemLogService systemLogService) {
         this.userAccountRepository = userAccountRepository;
-        this.systemPolicyRepository = systemPolicyRepository;
+        this.systemInfoRepository = systemInfoRepository;
         this.systemLogRepository = systemLogRepository;
         this.systemLogService = systemLogService;
     }
@@ -113,9 +113,37 @@ public class SystemController {
         if (!isLoggedIn(session)) {
             return "redirect:/system/login";
         }
-        List<SystemPolicy> policies = systemPolicyRepository.findAll();
-        model.addAttribute("policies", policies);
+        SystemInfo systemInfo = systemInfoRepository.findFirstByOrderByIdAsc()
+                .orElseGet(SystemInfo::new);
+        model.addAttribute("systemInfo", systemInfo);
         return "system/announcement";
+    }
+
+    @PostMapping("/announcement")
+    public String updateSystemInfo(HttpSession session,
+                                   @RequestParam String systemName,
+                                   @RequestParam String overview,
+                                   @RequestParam String coreFunctions,
+                                   @RequestParam String serviceScope,
+                                   @RequestParam String securityGuarantee,
+                                   @RequestParam String maintenanceSupport,
+                                   RedirectAttributes redirectAttributes) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/system/login";
+        }
+        SystemInfo systemInfo = systemInfoRepository.findFirstByOrderByIdAsc()
+                .orElseGet(SystemInfo::new);
+        systemInfo.setSystemName(systemName);
+        systemInfo.setOverview(overview);
+        systemInfo.setCoreFunctions(coreFunctions);
+        systemInfo.setServiceScope(serviceScope);
+        systemInfo.setSecurityGuarantee(securityGuarantee);
+        systemInfo.setMaintenanceSupport(maintenanceSupport);
+        systemInfoRepository.save(systemInfo);
+        String adminId = (String) session.getAttribute("systemAdminId");
+        systemLogService.log("管理员", "修改", "管理员账号 " + adminId + " 更新系统详细信息。");
+        redirectAttributes.addFlashAttribute("message", "系统详细信息已更新。");
+        return "redirect:/system/announcement";
     }
 
     @GetMapping("/log")

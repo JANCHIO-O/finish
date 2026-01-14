@@ -57,13 +57,13 @@ public class LibraryApplication implements CommandLineRunner {
 
         // 插入一些验收清单数据（包含与流通库重合的 ISBN）
         if (!acceptanceRecordRepository.existsById("A001")) {
-            acceptanceRecordRepository.save(new AcceptanceRecord("A001", "Java编程", "1234567890123", "出版社1", "图书", "验收员甲", Date.valueOf("2025-03-01")));
+            acceptanceRecordRepository.save(new AcceptanceRecord("A001", "Java编程", "作者1", "1234567890123", "出版社1", "图书", "验收员甲", Date.valueOf("2025-03-01")));
         }
         if (!acceptanceRecordRepository.existsById("A002")) {
-            acceptanceRecordRepository.save(new AcceptanceRecord("A002", "Spring入门", "1234567890124", "出版社2", "教程", "验收员乙", Date.valueOf("2025-03-02")));
+            acceptanceRecordRepository.save(new AcceptanceRecord("A002", "Spring入门", "作者2", "1234567890124", "出版社2", "教程", "验收员乙", Date.valueOf("2025-03-02")));
         }
         if (!acceptanceRecordRepository.existsById("A003")) {
-            acceptanceRecordRepository.save(new AcceptanceRecord("A003", "算法导论", "1234567890125", "出版社3", "教材", "验收员丙", Date.valueOf("2025-03-03")));
+            acceptanceRecordRepository.save(new AcceptanceRecord("A003", "算法导论", "作者3", "1234567890125", "出版社3", "教材", "验收员丙", Date.valueOf("2025-03-03")));
         }
 
         // 插入一些图书流通库数据

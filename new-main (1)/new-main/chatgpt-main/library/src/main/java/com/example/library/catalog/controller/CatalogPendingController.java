@@ -26,6 +26,7 @@ public class CatalogPendingController {
     /** 4.1 手动添加：写入 acceptance_record */
     @PostMapping("/pending/add")
     public String addPending(@RequestParam String title,
+                             @RequestParam String author,
                              @RequestParam String isbn,
                              @RequestParam String publisher,
                              @RequestParam String docType,
@@ -44,7 +45,7 @@ public class CatalogPendingController {
         Date date = Date.valueOf(publishDate);
 
         catalogService.addAcceptanceRecordManually(
-                title, normalizedIsbn, publisher, docType, checker, date
+                title, author, normalizedIsbn, publisher, docType, checker, date
         );
 
         return "redirect:/catalog/pending";

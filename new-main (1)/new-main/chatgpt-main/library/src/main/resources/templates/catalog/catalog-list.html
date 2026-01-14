@@ -13,6 +13,9 @@
         <th>图书编号</th>
         <th>ISBN</th>
         <th>书名</th>
+        <th>作者</th>
+        <th>出版社</th>
+        <th>文献类型</th>
         <th>编目员</th>
         <th>编目日期</th>
     </tr>
@@ -21,6 +24,9 @@
         <td th:text="${book.bookId}"></td>
         <td th:text="${book.isbn}"></td>
         <td th:text="${book.bookName}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.publisher}"></td>
+        <td th:text="${book.docType}"></td>
         <td th:text="${book.cataloger}"></td>
         <td th:text="${#temporals.format(book.catalogDate,'yyyy-MM-dd')}"></td>
     </tr>

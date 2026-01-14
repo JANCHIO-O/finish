@@ -14,6 +14,7 @@
 <h3>➕ 手动添加到验收清单</h3>
 <form action="/catalog/pending/add" method="post">
     <p>书名：<input type="text" name="title" required></p>
+    <p>作者：<input type="text" name="author" required></p>
     <p>ISBN：
         <input type="text" name="isbn" required inputmode="numeric" maxlength="13"
                oninput="this.value = this.value.replace(/\\D/g, '').slice(0, 13);">
@@ -38,6 +39,7 @@
     <tr>
         <th>验收编号</th>
         <th>书名</th>
+        <th>作者</th>
         <th>ISBN</th>
         <th>出版社</th>
         <th>文献类型</th>
@@ -48,6 +50,7 @@
     <tr th:each="book : ${pendingList}">
         <td th:text="${book.checkId}"></td>
         <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
         <td th:text="${book.isbn}"></td>
         <td th:text="${book.publisher}"></td>
         <td th:text="${book.docType}"></td>

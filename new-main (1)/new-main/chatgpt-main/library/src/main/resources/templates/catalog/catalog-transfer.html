@@ -27,12 +27,17 @@
     <tr>
         <th>ISBN</th>
         <th>书名</th>
-        <th>分类号</th>
+        <th>作者</th>
+        <th>出版社</th>
+        <th>文献类型</th>
         <th>编目员</th>
     </tr>
     <tr th:each="book : ${catalogList}">
         <td th:text="${book.isbn}"></td>
         <td th:text="${book.bookName}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.publisher}"></td>
+        <td th:text="${book.docType}"></td>
         <td th:text="${book.cataloger}"></td>
     </tr>
 </table>

@@ -1,6 +1,6 @@
 package com.example.library.web.dto;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class WebNewBookDto {
     private final String title;
@@ -8,15 +8,15 @@ public class WebNewBookDto {
     private final String isbn;
     private final String publisher;
     private final String docType;
-    private final Date publishDate;
+    private final LocalDate transferDate;
 
-    public WebNewBookDto(String title, String author, String isbn, String publisher, String docType, Date publishDate) {
+    public WebNewBookDto(String title, String author, String isbn, String publisher, String docType, LocalDate transferDate) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.publisher = publisher;
         this.docType = docType;
-        this.publishDate = publishDate;
+        this.transferDate = transferDate;
     }
 
     public String getTitle() {
@@ -39,7 +39,7 @@ public class WebNewBookDto {
         return docType;
     }
 
-    public Date getPublishDate() {
-        return publishDate;
+    public LocalDate getTransferDate() {
+        return transferDate;
     }
 }

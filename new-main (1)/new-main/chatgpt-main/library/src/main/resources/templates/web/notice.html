@@ -15,7 +15,7 @@
         <th>ISBN</th>
         <th>出版社</th>
         <th>文献类型</th>
-        <th>验收日期</th>
+        <th>移送日期</th>
     </tr>
     </thead>
     <tbody>
@@ -28,12 +28,12 @@
         <td th:text="${book.isbn}"></td>
         <td th:text="${book.publisher}"></td>
         <td th:text="${book.docType}"></td>
-        <td th:text="${book.publishDate}"></td>
+        <td th:text="${book.transferDate}"></td>
     </tr>
     </tbody>
 </table>
 
-<p>说明：新书来源于验收清单数据，展示书名、作者、ISBN 等基础信息，便于读者了解最新入馆书目。</p>
+<p>说明：新书来源于编目子系统的移送清单数据，展示书名、作者、ISBN 等基础信息，便于读者了解最新入馆书目。</p>
 
 <a th:href="@{/web}">返回目录</a>
 </body>

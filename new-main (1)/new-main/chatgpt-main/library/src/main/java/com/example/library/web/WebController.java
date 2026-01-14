@@ -2,6 +2,7 @@ package com.example.library.web;
 
 import com.example.library.common.entity.CirculationBook;
 import com.example.library.common.entity.UserAccount;
+import com.example.library.system.service.SystemLogService;
 import com.example.library.web.service.WebService;
 import jakarta.servlet.http.HttpSession;
 import java.net.URLEncoder;
@@ -22,9 +23,11 @@ import java.util.Optional;
 public class WebController {
 
     private final WebService webService;
+    private final SystemLogService systemLogService;
 
-    public WebController(WebService webService) {
+    public WebController(WebService webService, SystemLogService systemLogService) {
         this.webService = webService;
+        this.systemLogService = systemLogService;
     }
 
     @GetMapping("/login")
@@ -43,6 +46,8 @@ public class WebController {
         if (account.isPresent() && isAllowedRole(account.get().getRole())) {
             session.setAttribute("webUserId", account.get().getAccountId());
             session.setAttribute("webUserRole", account.get().getRole());
+            systemLogService.log("用户", "登录",
+                    "账号 " + account.get().getAccountId() + " 登录 Web 检索子系统。");
             redirectAttributes.addFlashAttribute("message", "登录成功，欢迎进入 Web 检索子系统。");
             if (target != null && !target.isBlank() && target.startsWith("/web")) {
                 return "redirect:" + target;

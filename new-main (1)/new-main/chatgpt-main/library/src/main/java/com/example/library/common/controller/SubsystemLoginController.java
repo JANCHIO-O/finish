@@ -2,6 +2,7 @@ package com.example.library.common.controller;
 
 import com.example.library.common.entity.UserAccount;
 import com.example.library.common.repository.UserAccountRepository;
+import com.example.library.system.service.SystemLogService;
 import jakarta.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -18,9 +19,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class SubsystemLoginController {
 
     private final UserAccountRepository userAccountRepository;
+    private final SystemLogService systemLogService;
 
-    public SubsystemLoginController(UserAccountRepository userAccountRepository) {
+    public SubsystemLoginController(UserAccountRepository userAccountRepository,
+                                    SystemLogService systemLogService) {
         this.userAccountRepository = userAccountRepository;
+        this.systemLogService = systemLogService;
     }
 
     @GetMapping("/catalog/login")
@@ -126,6 +130,7 @@ public class SubsystemLoginController {
         Optional<UserAccount> account = userAccountRepository.findByAccountIdAndRole(accountId, "TEACHER");
         if (account.isPresent() && account.get().getPassword().equals(password)) {
             session.setAttribute(sessionKey, accountId);
+            systemLogService.log("用户", "登录", "教师账号 " + accountId + " 登录" + subsystemName + "。");
             redirectAttributes.addFlashAttribute("message", "登录成功，欢迎进入" + subsystemName + "。");
             if (target != null && !target.isBlank()) {
                 return "redirect:" + target;

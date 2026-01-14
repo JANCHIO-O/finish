@@ -74,17 +74,38 @@ public class SystemController {
     }
 
     @GetMapping("/users")
-    public String users(HttpSession session,
-                        @RequestParam(required = false) String role,
-                        Model model) {
+    public String users(HttpSession session, Model model) {
         if (!isLoggedIn(session)) {
             return "redirect:/system/login";
         }
-        String selectedRole = normalizeRole(role);
-        List<UserAccount> accounts = userAccountRepository.findByRole(selectedRole);
+        List<UserAccount> accounts = userAccountRepository.findByRoleNot("ADMIN");
         model.addAttribute("accounts", accounts);
-        model.addAttribute("selectedRole", selectedRole);
         return "system/users";
+    }
+
+    @PostMapping("/users/password")
+    public String updatePassword(HttpSession session,
+                                 @RequestParam String accountId,
+                                 @RequestParam String newPassword,
+                                 RedirectAttributes redirectAttributes) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/system/login";
+        }
+        if (newPassword == null || newPassword.isBlank()) {
+            redirectAttributes.addFlashAttribute("message", "新密码不能为空。");
+            return "redirect:/system/users";
+        }
+        Optional<UserAccount> account = userAccountRepository.findByAccountId(accountId);
+        if (account.isEmpty() || "ADMIN".equals(account.get().getRole())) {
+            redirectAttributes.addFlashAttribute("message", "无法修改管理员账号或不存在的账号。");
+            return "redirect:/system/users";
+        }
+        account.get().setPassword(newPassword);
+        userAccountRepository.save(account.get());
+        String adminId = (String) session.getAttribute("systemAdminId");
+        systemLogService.log("管理员", "修改", "管理员账号 " + adminId + " 修改账号 " + accountId + " 的密码。");
+        redirectAttributes.addFlashAttribute("message", "密码已更新。");
+        return "redirect:/system/users";
     }
 
     @GetMapping("/announcement")
@@ -110,10 +131,5 @@ public class SystemController {
         return session.getAttribute("systemAdminId") != null;
     }
 
-    private String normalizeRole(String role) {
-        if ("STUDENT".equals(role)) {
-            return "STUDENT";
-        }
-        return "TEACHER";
-    }
+    
 }

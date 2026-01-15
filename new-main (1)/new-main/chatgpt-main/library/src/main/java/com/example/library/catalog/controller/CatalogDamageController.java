@@ -1,11 +1,13 @@
 package com.example.library.catalog.controller;
 
 import com.example.library.catalog.service.CatalogService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 
@@ -39,15 +41,26 @@ public class CatalogDamageController {
     }
 
     @GetMapping("/catalog/damage/approve")
-    public String approvePage(Model model) {
+    public String approvePage(HttpSession session, Model model) {
         model.addAttribute("damageRequests", catalogService.listDamageRequests());
+        model.addAttribute("currentOperator", session.getAttribute("catalogAccountId"));
         return "catalog/catalog-damage-approve";
     }
 
     @PostMapping("/catalog/damage/approve/submit")
     public String approve(@RequestParam String requestId,
                           @RequestParam String decision,
-                          @RequestParam String operator) {
+                          @RequestParam String operator,
+                          RedirectAttributes redirectAttributes) {
+        if (operator == null || operator.isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "请填写审核人");
+            return "redirect:/catalog/damage/approve";
+        }
+        String applicant = catalogService.getDamageRequest(requestId).getApplicant();
+        if (operator.equals(applicant)) {
+            redirectAttributes.addFlashAttribute("error", "申请人不能审核自己的报损申请");
+            return "redirect:/catalog/damage/approve";
+        }
         if ("approve".equals(decision)) {
             catalogService.approveDamageRequest(requestId, operator);
         } else {

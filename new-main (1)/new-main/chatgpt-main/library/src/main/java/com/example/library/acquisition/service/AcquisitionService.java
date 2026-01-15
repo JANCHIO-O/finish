@@ -107,7 +107,8 @@ public class AcquisitionService {
         }
     }
 
-    public void addReturnRecord(String orderDate, String orderer, String title, String author, String isbn, String publisher,
+    @Transactional
+    public void addReturnRecord(String orderId, String orderDate, String orderer, String title, String author, String isbn, String publisher,
                                 String docType, Double unitPrice, String currency, Integer orderQuantity, String orderStatus,
                                 Integer returnQuantity, String returner, String returnReason) {
         validateIsbn(isbn);
@@ -116,6 +117,7 @@ public class AcquisitionService {
         AcquisitionReturnRecord record = new AcquisitionReturnRecord(returnId, date, orderer, title, author, isbn, publisher,
                 docType, unitPrice, currency, orderQuantity, orderStatus, returnQuantity, returner, returnReason);
         returnRecordRepository.save(record);
+        acquisitionOrderRepository.deleteById(orderId);
     }
 
     private String generateAcquisitionId() {

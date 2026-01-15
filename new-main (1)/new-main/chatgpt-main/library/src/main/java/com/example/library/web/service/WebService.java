@@ -154,7 +154,7 @@ public class WebService {
     public List<WebOverdueNoticeDto> listOverdueNotices() {
         LocalDate today = LocalDate.now();
         return borrowRecordRepository.findAll().stream()
-                .filter(record -> "借阅".equals(record.getEventType()))
+                .filter(record -> "借阅".equals(record.getEventType()) && record.getReturnDate() == null)
                 .map(record -> {
                     LocalDate borrowDate = record.getFlowDate().toLocalDate();
                     LocalDate dueDate = borrowDate.plusDays(BORROW_DAYS_LIMIT);

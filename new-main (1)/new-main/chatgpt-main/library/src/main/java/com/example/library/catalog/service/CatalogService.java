@@ -168,11 +168,18 @@ public class CatalogService {
         return damageRequestRepo.findAll();
     }
 
+    public DamageRequestEntity getDamageRequest(String requestId) {
+        return damageRequestRepo.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("未找到报损申请"));
+    }
+
     /** 4.6.2 审核通过：写入报损记录并移除流通库 */
     @Transactional
     public void approveDamageRequest(String requestId, String operator) {
-        DamageRequestEntity request = damageRequestRepo.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("未找到报损申请"));
+        DamageRequestEntity request = getDamageRequest(requestId);
+        if (request.getApplicant() != null && request.getApplicant().equals(operator)) {
+            throw new IllegalArgumentException("申请人不能审核自己的报损申请");
+        }
         String damageId = generateDamageRecordId8();
         DamageRecordEntity record = new DamageRecordEntity(
                 damageId,

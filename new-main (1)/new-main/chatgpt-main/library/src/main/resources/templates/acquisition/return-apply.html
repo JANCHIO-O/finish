@@ -17,6 +17,7 @@
 
         <form th:if="${prefillOrder != null}" action="/acquisition/return/add" method="post">
             <p>订单号：<input type="text" th:value="${prefillOrder.orderId}" readonly></p>
+            <input type="hidden" name="orderId" th:value="${prefillOrder.orderId}">
             <p>订购日期：<input type="date" name="orderDate" th:value="${prefillOrder.orderDate}" readonly></p>
             <p>订购人：<input type="text" name="orderer" th:value="${prefillOrder.orderer}" readonly></p>
             <p>题名：<input type="text" name="title" th:value="${prefillOrder.title}" readonly></p>

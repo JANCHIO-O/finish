@@ -134,7 +134,8 @@ public class AcquisitionController {
     }
 
     @PostMapping("/return/add")
-    public String addReturn(@RequestParam String orderDate,
+    public String addReturn(@RequestParam String orderId,
+                            @RequestParam String orderDate,
                             @RequestParam String orderer,
                             @RequestParam String title,
                             @RequestParam String author,
@@ -148,7 +149,7 @@ public class AcquisitionController {
                             @RequestParam Integer returnQuantity,
                             @RequestParam String returner,
                             @RequestParam String returnReason) {
-        acquisitionService.addReturnRecord(orderDate, orderer, title, author, isbn, publisher, docType, unitPrice, currency,
+        acquisitionService.addReturnRecord(orderId, orderDate, orderer, title, author, isbn, publisher, docType, unitPrice, currency,
                 orderQuantity, orderStatus, returnQuantity, returner, returnReason);
         return "redirect:/acquisition/return";
     }

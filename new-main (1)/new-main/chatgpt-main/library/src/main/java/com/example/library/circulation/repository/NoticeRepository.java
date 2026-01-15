@@ -12,4 +12,6 @@ public interface NoticeRepository extends JpaRepository<NoticeEntity, String> {
     List<NoticeEntity> findByIsValidAndTargetCardNoIsNullOrTargetCardNoOrderByPublishTimeDesc(String isValid, String targetCardNo);
     // 修复：删除错误的带参方法，添加正确的无参排序方法
     List<NoticeEntity> findAllByOrderByPublishTimeDesc();
+    boolean existsByBizTypeAndBizIdAndTargetCardNoAndIsValid(String bizType, String bizId, String targetCardNo, String isValid);
+    List<NoticeEntity> findByBizTypeAndBizIdAndTargetCardNoAndIsValid(String bizType, String bizId, String targetCardNo, String isValid);
 }

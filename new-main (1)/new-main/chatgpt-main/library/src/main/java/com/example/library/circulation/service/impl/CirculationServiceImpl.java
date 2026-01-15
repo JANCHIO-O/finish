@@ -123,7 +123,6 @@ public class CirculationServiceImpl implements CirculationService {
         if (bookOpt.isEmpty()) return "图书编号不存在！";
 
         CirculationBook book = bookOpt.get();
-        if (book.getStatus() == 1) return "图书未被借出，无需归还！";
 
         Optional<BorrowRecord> latestBorrow = borrowRecordRepository
                 .findTopByBookIdAndCardNoAndEventTypeOrderByFlowDateDesc(bookId, cardNo, "借阅");

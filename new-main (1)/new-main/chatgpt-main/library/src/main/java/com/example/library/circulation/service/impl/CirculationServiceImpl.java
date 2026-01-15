@@ -312,6 +312,7 @@ public class CirculationServiceImpl implements CirculationService {
             } else {
                 dto.setStatus(1);
             }
+            dto.setStatusLabel(resolveStatusLabel(dto.getStatus()));
             dtoList.add(dto);
         }
         return dtoList;
@@ -342,6 +343,18 @@ public class CirculationServiceImpl implements CirculationService {
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    private String resolveStatusLabel(Integer status) {
+        if (status == null) {
+            return "状态未知";
+        }
+        return switch (status) {
+            case 0 -> "已借出";
+            case 1 -> "可借阅";
+            case 2 -> "已预约";
+            default -> "状态未知";
+        };
     }
 
     @Override

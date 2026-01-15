@@ -32,9 +32,7 @@
         <td>[[${book.isbn}]]</td>
         <td>[[${#dates.format(book.catalogDate, 'yyyy-MM-dd')}]]</td>
         <td th:classappend="'status-'+${book.status}">
-            <span th:if="${book.status == 0}">已借出</span>
-            <span th:if="${book.status == 1}">可借阅</span>
-            <span th:if="${book.status == 2}">已预约</span>
+            <span th:text="${book.statusLabel}">可借阅</span>
         </td>
     </tr>
 </table>

@@ -70,6 +70,7 @@ public class PeriodicalController {
                          @RequestParam(required = false) String publisher,
                          @RequestParam(required = false) Integer quantity) {
         model.addAttribute("acceptanceList", periodicalService.listAcceptanceRecords());
+        model.addAttribute("boundIssns", periodicalService.listBoundIssns());
         model.addAttribute("prefillOrderId", orderId);
         model.addAttribute("prefillTitle", title);
         model.addAttribute("prefillIssn", issn);

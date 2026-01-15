@@ -39,9 +39,11 @@
         <td th:text="${order.orderDate}"></td>
         <td th:text="${order.status}"></td>
         <td>
-            <a th:href="@{/periodical/verify(orderId=${order.orderId},title=${order.title},issn=${order.issn},publisher=${order.publisher},quantity=${order.quantity})}">
+            <a th:if="${order.status == '已下单'}"
+               th:href="@{/periodical/verify(orderId=${order.orderId},title=${order.title},issn=${order.issn},publisher=${order.publisher},quantity=${order.quantity})}">
                 去验收
             </a>
+            <span th:if="${order.status != '已下单'}">不可再次验收</span>
         </td>
     </tr>
 </table>

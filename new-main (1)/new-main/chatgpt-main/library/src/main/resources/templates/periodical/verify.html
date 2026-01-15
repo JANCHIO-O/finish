@@ -39,9 +39,11 @@
         <td th:text="${record.acceptanceDate}"></td>
         <td th:text="${record.status}"></td>
         <td>
-            <a th:href="@{/periodical/bind(title=${record.title},issn=${record.issn},publisher=${record.publisher})}">
+            <a th:if="${!boundIssns.contains(record.issn)}"
+               th:href="@{/periodical/bind(title=${record.title},issn=${record.issn},publisher=${record.publisher})}">
                 去装订
             </a>
+            <span th:if="${boundIssns.contains(record.issn)}">不可再次装订</span>
         </td>
     </tr>
 </table>

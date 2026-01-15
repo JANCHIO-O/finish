@@ -18,6 +18,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PeriodicalService {
@@ -70,6 +72,12 @@ public class PeriodicalService {
         return catalogEntryRepository.findAll();
     }
 
+    public Set<String> listBoundIssns() {
+        return bindingRecordRepository.findAll().stream()
+                .map(PeriodicalBindingRecord::getIssn)
+                .collect(Collectors.toSet());
+    }
+
     public void addVisitRecord(String title, String issn, String publisher, String recommender, String reason) {
         String visitId = generateVisitId();
         validateIssn(issn);
@@ -91,6 +99,9 @@ public class PeriodicalService {
         validateIssn(issn);
         PeriodicalOrder order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("未找到订购记录"));
+        if (!Objects.equals(order.getStatus(), "已下单")) {
+            throw new IllegalArgumentException("已验收订单无法再次验收");
+        }
         if (!Objects.equals(order.getIssn(), issn)) {
             throw new IllegalArgumentException("验收信息与订购记录不一致");
         }
@@ -104,6 +115,7 @@ public class PeriodicalService {
             acceptanceRecordRepository.save(record);
             order.setStatus("验收成功");
             orderRepository.save(order);
+            visitRecordRepository.deleteByIssn(issn);
         } else if ("验收失败".equals(status)) {
             orderRepository.delete(order);
         } else {
@@ -115,6 +127,9 @@ public class PeriodicalService {
     public void addBindingRecordAndCatalog(String title, String issn, String publisher, String binder, String shelfLocation) {
         String bindId = generateBindId();
         validateIssn(issn);
+        if (bindingRecordRepository.existsByIssn(issn)) {
+            throw new IllegalArgumentException("已装订期刊无法再次装订");
+        }
         Date date = Date.valueOf(LocalDate.now());
         PeriodicalBindingRecord record = new PeriodicalBindingRecord(bindId, title, issn, publisher, binder, date, shelfLocation);
         bindingRecordRepository.save(record);

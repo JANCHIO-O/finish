@@ -13,24 +13,6 @@
 
         <div th:if="${error}" style="color: red; font-weight: bold;" th:text="${error}"></div>
 
-        <!-- 手动添加到验收清单 -->
-        <h3>➕ 手动添加到验收清单</h3>
-        <form action="/catalog/pending/add" method="post">
-            <p>书名：<input type="text" name="title" required></p>
-            <p>作者：<input type="text" name="author" required></p>
-            <p>ISBN：
-                <input type="text" name="isbn" required inputmode="numeric" maxlength="13"
-                       oninput="this.value = this.value.replace(/\\D/g, '').slice(0, 13);">
-            </p>
-            <p>出版社：<input type="text" name="publisher" required></p>
-            <p>文献类型：<input type="text" name="docType" required></p>
-            <p>验收人：<input type="text" name="checker" required></p>
-            <p>出版日期：<input type="date" name="publishDate" th:value="${today}" readonly required></p>
-            <button type="submit">添加</button>
-        </form>
-
-        <hr>
-
         <!-- 展示验收清单 -->
         <h3>📚 本批次待编书目（来自 acceptance_record）</h3>
 
@@ -66,6 +48,24 @@
                 </td>
             </tr>
         </table>
+
+        <hr>
+
+        <!-- 手动添加到验收清单 -->
+        <h3>➕ 手动添加到验收清单</h3>
+        <form action="/catalog/pending/add" method="post">
+            <p>书名：<input type="text" name="title" required></p>
+            <p>作者：<input type="text" name="author" required></p>
+            <p>ISBN：
+                <input type="text" name="isbn" required inputmode="numeric" maxlength="13"
+                       oninput="this.value = this.value.replace(/\\D/g, '').slice(0, 13);">
+            </p>
+            <p>出版社：<input type="text" name="publisher" required></p>
+            <p>文献类型：<input type="text" name="docType" required></p>
+            <p>验收人：<input type="text" name="checker" required></p>
+            <p>出版日期：<input type="date" name="publishDate" th:value="${today}" readonly required></p>
+            <button type="submit">添加</button>
+        </form>
 
         <p><a href="/catalog/index">返回编目首页</a></p>
     </main>

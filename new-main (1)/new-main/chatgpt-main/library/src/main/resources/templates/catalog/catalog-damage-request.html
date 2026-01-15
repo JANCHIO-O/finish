@@ -12,32 +12,6 @@
 <h1>📕 申请报损</h1>
 <p>请选择流通库图书并填写报损信息。</p>
 
-<form action="/catalog/damage/request/submit" method="post">
-    <div>
-        <label>ISBN：</label>
-        <input type="text" id="isbn" name="isbn" readonly required>
-    </div>
-    <div>
-        <label>书名：</label>
-        <input type="text" id="bookName" name="bookName" readonly>
-    </div>
-    <div>
-        <label>报损原因：</label>
-        <input type="text" name="damageReason" required>
-    </div>
-    <div>
-        <label>申请人：</label>
-        <input type="text" name="applicant" required>
-    </div>
-    <div>
-        <label>报损日期：</label>
-        <input type="date" name="damageDate" th:value="${today}" readonly required>
-    </div>
-    <button type="submit">提交申请</button>
-</form>
-
-<hr>
-
 <h2>图书流通库表</h2>
 <table border="1" cellpadding="6">
     <thead>
@@ -66,6 +40,32 @@
     </tbody>
 </table>
 
+<hr>
+
+<form action="/catalog/damage/request/submit" method="post" id="damage-request-form">
+    <div>
+        <label>ISBN：</label>
+        <input type="text" id="isbn" name="isbn" readonly required>
+    </div>
+    <div>
+        <label>书名：</label>
+        <input type="text" id="bookName" name="bookName" readonly>
+    </div>
+    <div>
+        <label>报损原因：</label>
+        <input type="text" name="damageReason" required>
+    </div>
+    <div>
+        <label>申请人：</label>
+        <input type="text" name="applicant" required>
+    </div>
+    <div>
+        <label>报损日期：</label>
+        <input type="date" name="damageDate" th:value="${today}" readonly required>
+    </div>
+    <button type="submit">提交申请</button>
+</form>
+
 <p>
     <a href="/catalog/index">返回编目子系统</a>
 </p>
@@ -75,7 +75,7 @@
         button.addEventListener("click", function () {
             document.getElementById("isbn").value = button.dataset.isbn;
             document.getElementById("bookName").value = button.dataset.title;
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            document.getElementById("damage-request-form").scrollIntoView({ behavior: "smooth" });
         });
     });
 </script>

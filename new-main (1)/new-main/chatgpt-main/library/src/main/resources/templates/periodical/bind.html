@@ -12,19 +12,6 @@
 
 <h2>📚 期刊装订</h2>
 
-<h3>➕ 新增装订记录</h3>
-<form action="/periodical/bind/add" method="post">
-    <p>期刊名称：<input type="text" name="title" th:value="${prefillTitle}" required></p>
-    <p>ISSN：<input type="text" name="issn" pattern="\d{8}" th:value="${prefillIssn}" required></p>
-    <p>出版社：<input type="text" name="publisher" th:value="${prefillPublisher}" required></p>
-    <p>装订人员：<input type="text" name="binder" required></p>
-    <p>装订日期：<input type="date" name="bindDate" th:value="${today}" readonly required></p>
-    <p>馆藏位置：<input type="text" name="shelfLocation" required></p>
-    <button type="submit">装订入库</button>
-</form>
-
-<hr>
-
 <h3>📋 装订记录</h3>
 <div th:if="${#lists.isEmpty(bindingList)}">
     <p>暂无装订记录</p>
@@ -51,8 +38,6 @@
     </tr>
 </table>
 
-<hr>
-
 <h3>📖 期刊流通库表</h3>
 <div th:if="${#lists.isEmpty(catalogList)}">
     <p>暂无期刊馆藏记录</p>
@@ -76,6 +61,19 @@
         <td th:text="${record.location}"></td>
     </tr>
 </table>
+
+<hr>
+
+<h3>➕ 新增装订记录</h3>
+<form action="/periodical/bind/add" method="post">
+    <p>期刊名称：<input type="text" name="title" th:value="${prefillTitle}" required></p>
+    <p>ISSN：<input type="text" name="issn" pattern="\d{8}" th:value="${prefillIssn}" required></p>
+    <p>出版社：<input type="text" name="publisher" th:value="${prefillPublisher}" required></p>
+    <p>装订人员：<input type="text" name="binder" required></p>
+    <p>装订日期：<input type="date" name="bindDate" th:value="${today}" readonly required></p>
+    <p>馆藏位置：<input type="text" name="shelfLocation" required></p>
+    <button type="submit">装订入库</button>
+</form>
 
 <p><a href="/periodical">返回期刊管理首页</a></p>
 

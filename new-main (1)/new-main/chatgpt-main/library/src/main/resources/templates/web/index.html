@@ -7,26 +7,31 @@
 </head>
 <body>
 
-<h2>Web 检索发布子系统</h2>
+<div class="page-layout">
+    <div th:replace="fragments/sidebar :: homeMenu"></div>
+    <main class="page-content">
+        <h2>Web 检索发布子系统</h2>
 
-<p>
-    当前账号：<span th:text="${accountId}"></span>
-    <span th:if="${role}">（角色：<span th:text="${role}"></span>）</span>
-</p>
+        <p>
+            当前账号：<span th:text="${accountId}"></span>
+            <span th:if="${role}">（角色：<span th:text="${role}"></span>）</span>
+        </p>
 
-<p th:if="${message}" th:text="${message}"></p>
+        <p th:if="${message}" th:text="${message}"></p>
 
-<ul>
-    <li><a th:href="@{/web/notice}">新书通报</a></li>
-    <li><a th:href="@{/web/query}">图书查询</a></li>
-    <li><a th:href="@{/web/announce}">发布公告</a></li>
-    <li><a th:href="@{/web/message}">读者留言</a></li>
-    <li><a th:href="@{/web/overdue}">超期通报</a></li>
-</ul>
+        <ul class="menu-stack">
+            <li><a th:href="@{/web/notice}">新书通报</a></li>
+            <li><a th:href="@{/web/query}">图书查询</a></li>
+            <li><a th:href="@{/web/announce}">发布公告</a></li>
+            <li><a th:href="@{/web/message}">读者留言</a></li>
+            <li><a th:href="@{/web/overdue}">超期通报</a></li>
+        </ul>
 
-<a th:href="@{/web/logout}">退出登录</a>
-<br>
-<a th:href="@{/}">返回首页</a>
+        <a th:href="@{/web/logout}">退出登录</a>
+        <br>
+        <a th:href="@{/}">返回首页</a>
+    </main>
+</div>
 
 </body>
 </html>

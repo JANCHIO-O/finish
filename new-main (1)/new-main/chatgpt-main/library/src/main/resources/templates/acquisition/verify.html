@@ -6,63 +6,67 @@
     <link rel="stylesheet" href="/styles/app.css">
 </head>
 <body>
+<div class="page-layout">
+    <div th:replace="fragments/sidebar :: acquisitionMenu"></div>
+    <main class="page-content">
+        <h2>✅ 验收新书</h2>
 
-<h2>✅ 验收新书</h2>
+        <h3>➕ 新增验收</h3>
+        <div th:if="${error}" style="color: red;">
+            <p th:text="${error}"></p>
+        </div>
+        <form action="/acquisition/verify/add" method="post">
+            <p>订单号：<input type="text" name="orderId" th:value="${prefillOrder != null ? prefillOrder.orderId : ''}" required></p>
+            <p>题名：<input type="text" th:value="${prefillOrder != null ? prefillOrder.title : ''}" readonly></p>
+            <p>作者：<input type="text" th:value="${prefillOrder != null ? prefillOrder.author : ''}" readonly></p>
+            <p>ISBN：<input type="text" th:value="${prefillOrder != null ? prefillOrder.isbn : ''}" readonly></p>
+            <p>出版社：<input type="text" th:value="${prefillOrder != null ? prefillOrder.publisher : ''}" readonly></p>
+            <p>文献类型：<input type="text" th:value="${prefillOrder != null ? prefillOrder.docType : ''}" readonly></p>
+            <p>订购册数：<input type="text" th:value="${prefillOrder != null ? prefillOrder.quantity : ''}" readonly></p>
+            <p>验收人：<input type="text" name="checker" required></p>
+            <p>验收日期：<input type="date" name="acceptanceDate" th:value="${today}" readonly required></p>
+            <p>到馆数量：<input type="number" name="receivedQuantity" min="0" required></p>
+            <p>验收状态：
+                <select name="status" required>
+                    <option value="">请选择</option>
+                    <option value="验收成功">验收成功</option>
+                    <option value="验收失败">验收失败</option>
+                </select>
+            </p>
+            <button type="submit">提交验收</button>
+        </form>
 
-<h3>➕ 新增验收</h3>
-<div th:if="${error}" style="color: red;">
-    <p th:text="${error}"></p>
+        <hr>
+
+        <h3>📋 验收清单</h3>
+        <div th:if="${#lists.isEmpty(acceptanceList)}">
+            <p>暂无验收记录</p>
+        </div>
+
+        <table border="1" th:if="${!#lists.isEmpty(acceptanceList)}">
+            <tr>
+                <th>验收编号</th>
+                <th>题名</th>
+                <th>ISBN</th>
+                <th>出版社</th>
+                <th>文献类型</th>
+                <th>验收人</th>
+                <th>验收日期</th>
+            </tr>
+            <tr th:each="record : ${acceptanceList}">
+                <td th:text="${record.checkId}"></td>
+                <td th:text="${record.title}"></td>
+                <td th:text="${record.isbn}"></td>
+                <td th:text="${record.publisher}"></td>
+                <td th:text="${record.docType}"></td>
+                <td th:text="${record.checker}"></td>
+                <td th:text="${record.publishDate}"></td>
+            </tr>
+        </table>
+
+        <p><a href="/acquisition">返回采访管理首页</a></p>
+    </main>
 </div>
-<form action="/acquisition/verify/add" method="post">
-    <p>订单号：<input type="text" name="orderId" th:value="${prefillOrder != null ? prefillOrder.orderId : ''}" required></p>
-    <p>题名：<input type="text" th:value="${prefillOrder != null ? prefillOrder.title : ''}" readonly></p>
-    <p>作者：<input type="text" th:value="${prefillOrder != null ? prefillOrder.author : ''}" readonly></p>
-    <p>ISBN：<input type="text" th:value="${prefillOrder != null ? prefillOrder.isbn : ''}" readonly></p>
-    <p>出版社：<input type="text" th:value="${prefillOrder != null ? prefillOrder.publisher : ''}" readonly></p>
-    <p>文献类型：<input type="text" th:value="${prefillOrder != null ? prefillOrder.docType : ''}" readonly></p>
-    <p>订购册数：<input type="text" th:value="${prefillOrder != null ? prefillOrder.quantity : ''}" readonly></p>
-    <p>验收人：<input type="text" name="checker" required></p>
-    <p>验收日期：<input type="date" name="acceptanceDate" th:value="${today}" readonly required></p>
-    <p>到馆数量：<input type="number" name="receivedQuantity" min="0" required></p>
-    <p>验收状态：
-        <select name="status" required>
-            <option value="">请选择</option>
-            <option value="验收成功">验收成功</option>
-            <option value="验收失败">验收失败</option>
-        </select>
-    </p>
-    <button type="submit">提交验收</button>
-</form>
-
-<hr>
-
-<h3>📋 验收清单</h3>
-<div th:if="${#lists.isEmpty(acceptanceList)}">
-    <p>暂无验收记录</p>
-</div>
-
-<table border="1" th:if="${!#lists.isEmpty(acceptanceList)}">
-    <tr>
-        <th>验收编号</th>
-        <th>题名</th>
-        <th>ISBN</th>
-        <th>出版社</th>
-        <th>文献类型</th>
-        <th>验收人</th>
-        <th>验收日期</th>
-    </tr>
-    <tr th:each="record : ${acceptanceList}">
-        <td th:text="${record.checkId}"></td>
-        <td th:text="${record.title}"></td>
-        <td th:text="${record.isbn}"></td>
-        <td th:text="${record.publisher}"></td>
-        <td th:text="${record.docType}"></td>
-        <td th:text="${record.checker}"></td>
-        <td th:text="${record.publishDate}"></td>
-    </tr>
-</table>
-
-<p><a href="/acquisition">返回采访管理首页</a></p>
 
 </body>
 </html>

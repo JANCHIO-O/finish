@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="/styles/app.css">
 </head>
 <body>
+<div class="page-layout">
+    <div th:replace="fragments/sidebar :: catalogMenu"></div>
+    <main class="page-content">
 
 <h2>📢 新书通报（最近一次移送）</h2>
 
@@ -34,5 +37,7 @@
 
 <p><a href="/catalog/index">返回编目首页</a></p>
 
+    </main>
+</div>
 </body>
 </html>

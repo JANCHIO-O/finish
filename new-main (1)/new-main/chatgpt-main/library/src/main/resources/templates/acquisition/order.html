@@ -6,65 +6,69 @@
     <link rel="stylesheet" href="/styles/app.css">
 </head>
 <body>
+<div class="page-layout">
+    <div th:replace="fragments/sidebar :: acquisitionMenu"></div>
+    <main class="page-content">
+        <h2>📦 订购新书</h2>
 
-<h2>📦 订购新书</h2>
+        <h3>➕ 新增订购</h3>
+        <form action="/acquisition/order/add" method="post">
+            <p>题名：<input type="text" name="title" th:value="${prefillTitle}" required></p>
+            <p>作者：<input type="text" name="author" th:value="${prefillAuthor}" required></p>
+            <p>ISBN：<input type="text" name="isbn" pattern="\d{13}" th:value="${prefillIsbn}" required></p>
+            <p>出版社：<input type="text" name="publisher" th:value="${prefillPublisher}" required></p>
+            <p>文献类型：<input type="text" name="docType" th:value="${prefillDocType}" required></p>
+            <p>订购人：<input type="text" name="orderer" required></p>
+            <p>订购日期：<input type="date" name="orderDate" th:value="${today}" readonly required></p>
+            <p>订购册数：<input type="number" name="quantity" min="1" required></p>
+            <p>订购价：<input type="number" step="0.01" name="unitPrice" min="0" required></p>
+            <button type="submit">提交订购</button>
+        </form>
 
-<h3>➕ 新增订购</h3>
-<form action="/acquisition/order/add" method="post">
-    <p>题名：<input type="text" name="title" th:value="${prefillTitle}" required></p>
-    <p>作者：<input type="text" name="author" th:value="${prefillAuthor}" required></p>
-    <p>ISBN：<input type="text" name="isbn" pattern="\d{13}" th:value="${prefillIsbn}" required></p>
-    <p>出版社：<input type="text" name="publisher" th:value="${prefillPublisher}" required></p>
-    <p>文献类型：<input type="text" name="docType" th:value="${prefillDocType}" required></p>
-    <p>订购人：<input type="text" name="orderer" required></p>
-    <p>订购日期：<input type="date" name="orderDate" th:value="${today}" readonly required></p>
-    <p>订购册数：<input type="number" name="quantity" min="1" required></p>
-    <p>订购价：<input type="number" step="0.01" name="unitPrice" min="0" required></p>
-    <button type="submit">提交订购</button>
-</form>
+        <hr>
 
-<hr>
+        <h3>📋 订单信息表</h3>
+        <div th:if="${#lists.isEmpty(orderList)}">
+            <p>暂无订单</p>
+        </div>
 
-<h3>📋 订单信息表</h3>
-<div th:if="${#lists.isEmpty(orderList)}">
-    <p>暂无订单</p>
+        <table border="1" th:if="${!#lists.isEmpty(orderList)}">
+            <tr>
+                <th>订单号</th>
+                <th>订购日期</th>
+                <th>订购人</th>
+                <th>题名</th>
+                <th>作者</th>
+                <th>ISBN</th>
+                <th>出版社</th>
+                <th>文献类型</th>
+                <th>订购价</th>
+                <th>订购册数</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            <tr th:each="order : ${orderList}">
+                <td th:text="${order.orderId}"></td>
+                <td th:text="${order.orderDate}"></td>
+                <td th:text="${order.orderer}"></td>
+                <td th:text="${order.title}"></td>
+                <td th:text="${order.author}"></td>
+                <td th:text="${order.isbn}"></td>
+                <td th:text="${order.publisher}"></td>
+                <td th:text="${order.docType}"></td>
+                <td th:text="${order.unitPrice}"></td>
+                <td th:text="${order.quantity}"></td>
+                <td th:text="${order.status}"></td>
+                <td>
+                    <a th:if="${order.status == '待验收'}" th:href="@{/acquisition/verify(orderId=${order.orderId})}">去验收</a>
+                    <span th:if="${order.status != '待验收'}">已验收</span>
+                </td>
+            </tr>
+        </table>
+
+        <p><a href="/acquisition">返回采访管理首页</a></p>
+    </main>
 </div>
-
-<table border="1" th:if="${!#lists.isEmpty(orderList)}">
-    <tr>
-        <th>订单号</th>
-        <th>订购日期</th>
-        <th>订购人</th>
-        <th>题名</th>
-        <th>作者</th>
-        <th>ISBN</th>
-        <th>出版社</th>
-        <th>文献类型</th>
-        <th>订购价</th>
-        <th>订购册数</th>
-        <th>状态</th>
-        <th>操作</th>
-    </tr>
-    <tr th:each="order : ${orderList}">
-        <td th:text="${order.orderId}"></td>
-        <td th:text="${order.orderDate}"></td>
-        <td th:text="${order.orderer}"></td>
-        <td th:text="${order.title}"></td>
-        <td th:text="${order.author}"></td>
-        <td th:text="${order.isbn}"></td>
-        <td th:text="${order.publisher}"></td>
-        <td th:text="${order.docType}"></td>
-        <td th:text="${order.unitPrice}"></td>
-        <td th:text="${order.quantity}"></td>
-        <td th:text="${order.status}"></td>
-        <td>
-            <a th:if="${order.status == '待验收'}" th:href="@{/acquisition/verify(orderId=${order.orderId})}">去验收</a>
-            <span th:if="${order.status != '待验收'}">已验收</span>
-        </td>
-    </tr>
-</table>
-
-<p><a href="/acquisition">返回采访管理首页</a></p>
 
 </body>
 </html>

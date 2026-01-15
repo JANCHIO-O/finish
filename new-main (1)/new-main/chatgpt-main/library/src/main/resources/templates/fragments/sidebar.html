@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="sidebar" th:fragment="homeMenu">
+    <h3>主菜单</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/user}">用户管理</a></li>
+        <li><a th:href="@{/acquisition}">采访管理</a></li>
+        <li><a th:href="@{/catalog}">编目管理</a></li>
+        <li><a th:href="@{/circulation}">流通管理</a></li>
+        <li><a th:href="@{/periodical}">期刊管理</a></li>
+        <li><a th:href="@{/statistics}">统计打印</a></li>
+        <li><a th:href="@{/web}">Web 查询</a></li>
+        <li><a th:href="@{/system}">系统维护</a></li>
+    </ul>
+</aside>
+
+<aside class="sidebar" th:fragment="userMenu">
+    <h3>用户管理</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/user/register}">注册</a></li>
+        <li><a th:href="@{/user/login}">登录</a></li>
+        <li><a th:href="@{/user/manage}">用户管理</a></li>
+    </ul>
+</aside>
+
+<aside class="sidebar" th:fragment="acquisitionMenu">
+    <h3>采访管理</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/acquisition/collect}">采访收集</a></li>
+        <li><a th:href="@{/acquisition/order}">订购新书</a></li>
+        <li><a th:href="@{/acquisition/verify}">验收新书</a></li>
+        <li><a th:href="@{/acquisition/modify}">修改订单</a></li>
+        <li><a th:href="@{/acquisition/return}">退货</a></li>
+    </ul>
+</aside>
+
+<aside class="sidebar" th:fragment="catalogMenu">
+    <h3>编目管理</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/catalog/pending}">待编书目查看</a></li>
+        <li><a th:href="@{/catalog/direct}">直接编目</a></li>
+        <li><a th:href="@{/catalog/list}">编目清单查询</a></li>
+        <li><a th:href="@{/catalog/transfer}">移送管理</a></li>
+        <li><a th:href="@{/catalog/transfer/list}">移送清单查看</a></li>
+        <li><a th:href="@{/catalog/notice}">新书通报</a></li>
+        <li><a th:href="@{/catalog/damage/request}">申请报损</a></li>
+        <li><a th:href="@{/catalog/damage/approve}">报损审核</a></li>
+        <li><a th:href="@{/catalog/damage/records}">报损记录查看</a></li>
+    </ul>
+</aside>
+
+<aside class="sidebar" th:fragment="circulationMenu">
+    <h3>流通管理</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/circulation/borrow}">图书借阅</a></li>
+        <li><a th:href="@{/circulation/return}">图书归还</a></li>
+        <li><a th:href="@{/circulation/info}">图书借阅查询</a></li>
+        <li><a th:href="@{/circulation/notice-manage}">公告管理</a></li>
+        <li><a th:href="@{/circulation/overdue}">超期处理</a></li>
+        <li><a th:href="@{/circulation/reserve}">图书预借</a></li>
+    </ul>
+</aside>
+
+<aside class="sidebar" th:fragment="periodicalMenu">
+    <h3>期刊管理</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/periodical/order}">期刊订购</a></li>
+        <li><a th:href="@{/periodical/verify}">期刊验收</a></li>
+        <li><a th:href="@{/periodical/bind}">期刊装订</a></li>
+        <li><a th:href="@{/periodical/visit}">期刊阅览</a></li>
+        <li><a th:href="@{/periodical/query}">期刊查询</a></li>
+    </ul>
+</aside>
+
+<aside class="sidebar" th:fragment="statisticsMenu">
+    <h3>统计打印</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/statistics/report}">统计报表</a></li>
+        <li><a th:href="@{/statistics/stat}">打印统计</a></li>
+    </ul>
+</aside>
+
+<aside class="sidebar" th:fragment="webMenu">
+    <h3>Web 查询</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/web/notice}">新书通报</a></li>
+        <li><a th:href="@{/web/query}">图书查询</a></li>
+        <li><a th:href="@{/web/announce}">发布公告</a></li>
+        <li><a th:href="@{/web/message}">读者留言</a></li>
+        <li><a th:href="@{/web/overdue}">超期通报</a></li>
+    </ul>
+</aside>
+
+<aside class="sidebar" th:fragment="systemMenu">
+    <h3>系统维护</h3>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/system/users}">用户信息维护</a></li>
+        <li><a th:href="@{/system/announcement}">系统详细信息</a></li>
+        <li><a th:href="@{/system/log}">系统维护日志</a></li>
+    </ul>
+</aside>
+</body>
+</html>

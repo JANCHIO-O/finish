@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="/styles/app.css">
 </head>
 <body>
+<div class="page-layout">
+    <div th:replace="fragments/sidebar :: circulationMenu"></div>
+    <main class="page-content">
 <h2>图书流通信息查询</h2>
 <hr>
 <div th:if="${#lists.isEmpty(bookList)}" class="empty">暂无图书信息</div>
@@ -37,5 +40,7 @@
 </table>
 <br>
 <a href="/circulation">← 返回流通菜单</a> <!-- 修复路径：从/index改为/circulation -->
+    </main>
+</div>
 </body>
 </html>

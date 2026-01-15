@@ -6,6 +6,7 @@ public class CirculationBookDto {
     private String title;
     private Date catalogDate;
     private Integer status;
+    private String statusLabel;
     public String getBookId() { return bookId; }
     public void setBookId(String bookId) { this.bookId = bookId; }
     public String getIsbn() { return isbn; }
@@ -16,4 +17,6 @@ public class CirculationBookDto {
     public void setCatalogDate(Date catalogDate) { this.catalogDate = catalogDate; }
     public Integer getStatus() { return status; }
     public void setStatus(Integer status) { this.status = status; }
+    public String getStatusLabel() { return statusLabel; }
+    public void setStatusLabel(String statusLabel) { this.statusLabel = statusLabel; }
 }

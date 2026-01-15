@@ -57,7 +57,7 @@
     </div>
     <div>
         <label>申请人：</label>
-        <input type="text" name="applicant" required>
+        <input type="text" name="applicant" th:value="${currentApplicant}" th:readonly="${currentApplicant != null}" required>
     </div>
     <div>
         <label>报损日期：</label>

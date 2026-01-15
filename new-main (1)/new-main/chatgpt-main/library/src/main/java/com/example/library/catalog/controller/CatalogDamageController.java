@@ -21,20 +21,23 @@ public class CatalogDamageController {
     }
 
     @GetMapping("/catalog/damage/request")
-    public String damageRequestPage(Model model) {
+    public String damageRequestPage(HttpSession session, Model model) {
         model.addAttribute("circulationList", catalogService.listCirculationBooks());
         model.addAttribute("today", LocalDate.now());
+        model.addAttribute("currentApplicant", session.getAttribute("catalogAccountId"));
         return "catalog/catalog-damage-request";
     }
 
     @PostMapping("/catalog/damage/request/submit")
     public String submitDamageRequest(@RequestParam String isbn,
                                       @RequestParam String damageReason,
-                                      @RequestParam String applicant) {
+                                      @RequestParam String applicant,
+                                      HttpSession session) {
+        String currentApplicant = (String) session.getAttribute("catalogAccountId");
         catalogService.submitDamageRequest(
                 isbn,
                 damageReason,
-                applicant,
+                currentApplicant != null && !currentApplicant.isBlank() ? currentApplicant : applicant,
                 LocalDate.now()
         );
         return "redirect:/catalog/damage/request";
@@ -51,9 +54,19 @@ public class CatalogDamageController {
     public String approve(@RequestParam String requestId,
                           @RequestParam String decision,
                           @RequestParam String operator,
+                          HttpSession session,
                           RedirectAttributes redirectAttributes) {
+        String currentOperator = (String) session.getAttribute("catalogAccountId");
+        if (currentOperator == null || currentOperator.isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "未获取到当前登录账号");
+            return "redirect:/catalog/damage/approve";
+        }
         if (operator == null || operator.isBlank()) {
             redirectAttributes.addFlashAttribute("error", "请填写审核人");
+            return "redirect:/catalog/damage/approve";
+        }
+        if (!currentOperator.equals(operator)) {
+            redirectAttributes.addFlashAttribute("error", "审核人必须为当前登录账号");
             return "redirect:/catalog/damage/approve";
         }
         String applicant = catalogService.getDamageRequest(requestId).getApplicant();

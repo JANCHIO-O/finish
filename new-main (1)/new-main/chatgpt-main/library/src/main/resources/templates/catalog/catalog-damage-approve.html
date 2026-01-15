@@ -26,7 +26,9 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="request : ${damageRequests}">
+    <tr th:each="request : ${damageRequests}"
+        th:with="sameApplicant=${currentOperator != null and currentOperator == request.applicant},
+                 missingOperator=${currentOperator == null}">
         <td th:text="${request.requestId}"></td>
         <td th:text="${request.isbn}"></td>
         <td th:text="${request.bookName}"></td>
@@ -46,9 +48,15 @@
                     </label>
                 </div>
                 <div>
-                    <input type="text" name="operator" placeholder="审核人" th:value="${currentOperator}" th:readonly="${currentOperator != null}" required>
+                    <input type="text"
+                           name="operator"
+                           placeholder="审核人"
+                           th:value="${sameApplicant or missingOperator ? '' : currentOperator}"
+                           th:readonly="${not missingOperator}"
+                           th:disabled="${sameApplicant or missingOperator}"
+                           required>
                 </div>
-                <button type="submit" th:disabled="${currentOperator != null and currentOperator == request.applicant}">提交</button>
+                <button type="submit" th:disabled="${sameApplicant or missingOperator}">提交</button>
             </form>
         </td>
     </tr>

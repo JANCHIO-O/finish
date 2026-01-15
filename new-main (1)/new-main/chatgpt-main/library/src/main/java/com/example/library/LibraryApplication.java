@@ -153,7 +153,7 @@ public class LibraryApplication implements CommandLineRunner {
             userAccountRepository.save(new UserAccount("S2005", "STUDENT", "123456"));
         }
 
-        LocalDate borrowBaseDate = LocalDate.now().minusDays(14);
+        LocalDate borrowBaseDate = LocalDate.of(2025, 9, 1);
         saveBorrowRecordWithReturn("BR001", "1234567890123", "Java编程", "作者1", "S2001", "周然", "B001",
                 borrowBaseDate, borrowBaseDate.plusDays(7));
         saveBorrowRecordWithReturn("BR002", "1234567890124", "Spring入门", "作者2", "S2002", "刘萱", "B002",
@@ -187,12 +187,16 @@ public class LibraryApplication implements CommandLineRunner {
         saveBorrowRecordWithReturn("BR016", "1234567890123", "Java编程", "作者1", "S2003", "徐晴", "B001",
                 LocalDate.of(2026, 1, 12), LocalDate.of(2026, 1, 20));
         saveBorrowRecordWithReturn("BR017", "1234567890124", "Spring入门", "作者2", "S2004", "杜凯", "B002",
-                LocalDate.of(2026, 1, 12), LocalDate.of(2026, 1, 20));
+                LocalDate.of(2026, 1, 12), LocalDate.of(2026, 1, 21));
+        saveBorrowRecordWithReturn("BR020", "1234567890126", "数据结构", "作者3", "S2001", "周然", "B003",
+                LocalDate.of(2026, 1, 15), LocalDate.of(2026, 1, 24));
+        saveBorrowRecordWithReturn("BR021", "1234567890127", "数据库系统", "作者4", "S2002", "刘萱", "B004",
+                LocalDate.of(2026, 1, 16), LocalDate.of(2026, 1, 26));
         if (!borrowRecordRepository.existsById("BR018")) {
-            borrowRecordRepository.save(new BorrowRecord("BR018", "1234567890132", "概率论与数理统计", "作者9", "借阅", "S2005", "唐嘉", "B009", Date.valueOf("2024-05-20")));
+            borrowRecordRepository.save(new BorrowRecord("BR018", "1234567890132", "概率论与数理统计", "作者9", "借阅", "S2005", "唐嘉", "B009", Date.valueOf("2025-10-05")));
         }
         if (!borrowRecordRepository.existsById("BR019")) {
-            borrowRecordRepository.save(new BorrowRecord("BR019", "1234567890130", "软件工程", "作者7", "借阅", "S2002", "刘萱", "B007", Date.valueOf("2024-11-03")));
+            borrowRecordRepository.save(new BorrowRecord("BR019", "1234567890133", "线性代数", "作者10", "借阅", "S2004", "杜凯", "B010", Date.valueOf("2025-10-12")));
         }
     }
 

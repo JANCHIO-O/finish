@@ -307,6 +307,8 @@ public class CirculationServiceImpl implements CirculationService {
                     && latestBorrow.get().getReturnDate() == null;
             if (activeBorrow) {
                 dto.setStatus(0);
+            } else if (entity.getStatus() != null && entity.getStatus() == 0) {
+                dto.setStatus(0);
             } else if (entity.getStatus() != null && entity.getStatus() == 2) {
                 dto.setStatus(2);
             } else {

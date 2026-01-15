@@ -52,7 +52,14 @@ public class CirculationServiceImpl implements CirculationService {
         if (bookOpt.isEmpty()) return "图书编号不存在！";
 
         CirculationBook book = bookOpt.get();
-        if (book.getStatus() == 0) return "图书已借出，无法借阅！";
+        Optional<BorrowRecord> activeBorrowRecord = borrowRecordRepository
+                .findTopByBookIdAndEventTypeAndReturnDateIsNullOrderByFlowDateDesc(bookId, "借阅");
+        if (activeBorrowRecord.isPresent()) {
+            if (cardNo.equals(activeBorrowRecord.get().getCardNo())) {
+                return "您已借阅过该图书，归还后才能再次借阅！";
+            }
+            return "图书已借出，无法借阅！";
+        }
 
         // 预约人专属借阅权限
         if (book.getStatus() == 2) {
@@ -197,8 +204,17 @@ public class CirculationServiceImpl implements CirculationService {
         if (bookOpt.isEmpty()) return "图书编号不存在！";
 
         CirculationBook book = bookOpt.get();
-        if (book.getStatus() == 1) return "图书可直接借阅，无需预约！";
-        if (book.getStatus() == 2) return "图书已被他人预约，无法重复预约！";
+        List<ReservationEntity> existingReservations = reservationRepository.findByBookIdAndStatus(bookId, "有效");
+        if (existingReservations != null && !existingReservations.isEmpty()) {
+            if (existingReservations.stream().anyMatch(reserve -> cardNo.equals(reserve.getCardNo()))) {
+                return "您已预约过该图书，无需重复预约！";
+            }
+            return "图书已被他人预约，无法重复预约！";
+        }
+
+        Optional<BorrowRecord> activeBorrowRecord = borrowRecordRepository
+                .findTopByBookIdAndEventTypeAndReturnDateIsNullOrderByFlowDateDesc(bookId, "借阅");
+        if (activeBorrowRecord.isEmpty() && book.getStatus() == 1) return "图书可直接借阅，无需预约！";
 
         List<ReservationEntity> myReservations = reservationRepository.findByBookIdAndCardNoAndStatus(bookId, cardNo, "有效");
         if (myReservations != null && !myReservations.isEmpty()) {
@@ -215,7 +231,11 @@ public class CirculationServiceImpl implements CirculationService {
         reservation.setStatus("有效");
         reservationRepository.save(reservation);
 
-        book.setStatus(2);
+        if (activeBorrowRecord.isPresent()) {
+            book.setStatus(0);
+        } else {
+            book.setStatus(2);
+        }
         circulationBookRepository.save(book);
 
         // 自动生成预约成功通知公告

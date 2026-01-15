@@ -13,4 +13,7 @@ public interface BorrowRecordMapper extends JpaRepository<BorrowRecord, String> 
     List<BorrowRecord> findByBookIdAndCardNoAndEventType(String bookId, String cardNo, String eventType);
     List<BorrowRecord> findByReturnDateIsNullAndFlowDateBefore(Date flowDate);
     List<BorrowRecord> findByCardNoAndReturnDateIsNullAndFlowDateBefore(String cardNo, Date flowDate);
+    java.util.Optional<BorrowRecord> findTopByBookIdAndCardNoAndEventTypeOrderByFlowDateDesc(String bookId, String cardNo, String eventType);
+    java.util.Optional<BorrowRecord> findTopByBookIdAndEventTypeAndReturnDateIsNullOrderByFlowDateDesc(String bookId, String eventType);
+    java.util.Optional<BorrowRecord> findTopByBookIdAndEventTypeOrderByFlowDateDesc(String bookId, String eventType);
 }

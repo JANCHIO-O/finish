@@ -62,10 +62,16 @@ public class CirculationServiceImpl implements CirculationService {
             }
         }
 
-        // 重复借阅判断：有借阅未还书 禁止借阅
-        List<BorrowRecord> borrowList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "借阅");
-        List<BorrowRecord> returnList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "还书");
-        if (borrowList != null && !borrowList.isEmpty() && (returnList == null || returnList.isEmpty())) {
+        // 重复借阅判断：存在未归还借阅记录时禁止借阅
+        Optional<BorrowRecord> latestBorrow = borrowRecordRepository
+                .findTopByBookIdAndCardNoAndEventTypeOrderByFlowDateDesc(bookId, cardNo, "借阅");
+        Optional<BorrowRecord> latestReturn = borrowRecordRepository
+                .findTopByBookIdAndCardNoAndEventTypeOrderByFlowDateDesc(bookId, cardNo, "还书");
+        boolean hasActiveBorrow = latestBorrow.isPresent()
+                && (latestReturn.isEmpty()
+                || latestBorrow.get().getFlowDate().after(latestReturn.get().getFlowDate()))
+                && latestBorrow.get().getReturnDate() == null;
+        if (hasActiveBorrow) {
             return "您已借阅过该图书，归还后才能再次借阅！";
         }
 
@@ -75,7 +81,7 @@ public class CirculationServiceImpl implements CirculationService {
         record.setBookId(bookId);
         record.setIsbn(book.getIsbn());
         record.setTitle(book.getTitle());
-        record.setAuthor(book.getTitle());
+        record.setAuthor(book.getAuthor());
         record.setEventType("借阅");
         record.setCardNo(cardNo);
         record.setName(readerOpt.get().getName());
@@ -112,9 +118,16 @@ public class CirculationServiceImpl implements CirculationService {
         CirculationBook book = bookOpt.get();
         if (book.getStatus() == 1) return "图书未被借出，无需归还！";
 
-        List<BorrowRecord> borrowList = borrowRecordRepository.findByBookIdAndCardNoAndEventType(bookId, cardNo, "借阅");
-        if (borrowList == null || borrowList.isEmpty()) return "无此图书的借阅记录！";
-        BorrowRecord borrowEntity = borrowList.get(0);
+        Optional<BorrowRecord> latestBorrow = borrowRecordRepository
+                .findTopByBookIdAndCardNoAndEventTypeOrderByFlowDateDesc(bookId, cardNo, "借阅");
+        Optional<BorrowRecord> latestReturn = borrowRecordRepository
+                .findTopByBookIdAndCardNoAndEventTypeOrderByFlowDateDesc(bookId, cardNo, "还书");
+        boolean hasActiveBorrow = latestBorrow.isPresent()
+                && (latestReturn.isEmpty()
+                || latestBorrow.get().getFlowDate().after(latestReturn.get().getFlowDate()))
+                && latestBorrow.get().getReturnDate() == null;
+        if (!hasActiveBorrow) return "无此图书的借阅记录！";
+        BorrowRecord borrowEntity = latestBorrow.get();
 
         // 生成还书记录 - 补全所有字段
         BorrowRecord returnRecord = new BorrowRecord();
@@ -122,7 +135,7 @@ public class CirculationServiceImpl implements CirculationService {
         returnRecord.setBookId(bookId);
         returnRecord.setIsbn(book.getIsbn());
         returnRecord.setTitle(book.getTitle());
-        returnRecord.setAuthor(book.getTitle());
+        returnRecord.setAuthor(book.getAuthor());
         returnRecord.setEventType("还书");
         returnRecord.setCardNo(cardNo);
         returnRecord.setName(readerOpt.get().getName());
@@ -137,6 +150,9 @@ public class CirculationServiceImpl implements CirculationService {
         double penalty = overdueDays * PENALTY_PER_DAY;
         returnRecord.setOverdueDays(overdueDays);
         returnRecord.setPenalty(penalty);
+        borrowEntity.setReturnDate(new java.sql.Date(System.currentTimeMillis()));
+        borrowEntity.setOverdueDays(overdueDays);
+        borrowEntity.setPenalty(penalty);
 
         // 归还后图书状态：有预约→已预约，无预约→可借阅
         List<ReservationEntity> reservations = reservationRepository.findByBookIdAndStatus(bookId, "有效");
@@ -146,14 +162,21 @@ public class CirculationServiceImpl implements CirculationService {
             book.setStatus(1);
         }
         circulationBookRepository.save(book);
+        borrowRecordRepository.save(borrowEntity);
         borrowRecordRepository.save(returnRecord);
 
         String returnMsg;
         if (overdueDays > 0) {
+            List<NoticeEntity> overdueNotices = noticeRepository
+                    .findByBizTypeAndBizIdAndTargetCardNoAndIsValid("overdue", bookId, cardNo, "有效");
+            for (NoticeEntity notice : overdueNotices) {
+                notice.setIsValid("无效");
+                noticeRepository.save(notice);
+            }
             returnMsg = "还书成功！超期"+overdueDays+"天，罚金¥"+String.format("%.2f",penalty);
-            createNotice("图书超期提醒",
+            createNotice("超期归还通知",
                     "您好！您归还的图书《"+book.getTitle()+"》(编号："+bookId+")已超期"+overdueDays+"天，已缴纳罚金¥"+String.format("%.2f",penalty)+"，感谢配合！",
-                    cardNo, "overdue", bookId);
+                    cardNo, "borrow", bookId);
         } else {
             returnMsg = "还书成功！无超期";
             createNotice("还书成功通知",
@@ -255,7 +278,21 @@ public class CirculationServiceImpl implements CirculationService {
             dto.setIsbn(entity.getIsbn());
             dto.setTitle(entity.getTitle());
             dto.setCatalogDate(entity.getCatalogDate());
-            dto.setStatus(entity.getStatus());
+            Optional<BorrowRecord> latestBorrow = borrowRecordRepository
+                    .findTopByBookIdAndEventTypeOrderByFlowDateDesc(entity.getBookId(), "借阅");
+            Optional<BorrowRecord> latestReturn = borrowRecordRepository
+                    .findTopByBookIdAndEventTypeOrderByFlowDateDesc(entity.getBookId(), "还书");
+            boolean activeBorrow = latestBorrow.isPresent()
+                    && (latestReturn.isEmpty()
+                    || latestBorrow.get().getFlowDate().after(latestReturn.get().getFlowDate()))
+                    && latestBorrow.get().getReturnDate() == null;
+            if (activeBorrow) {
+                dto.setStatus(0);
+            } else if (entity.getStatus() != null && entity.getStatus() == 2) {
+                dto.setStatus(2);
+            } else {
+                dto.setStatus(1);
+            }
             dtoList.add(dto);
         }
         return dtoList;
@@ -365,10 +402,13 @@ public class CirculationServiceImpl implements CirculationService {
             dto.setPenalty(overdueDays * PENALTY_PER_DAY);
             dtoList.add(dto);
 
-            // 自动生成超期提醒公告
-            createNotice("图书超期提醒",
-                    "您好！您借阅的图书《"+entity.getTitle()+"》(编号："+entity.getBookId()+")已超期"+overdueDays+"天，预计罚金¥"+String.format("%.2f",overdueDays * PENALTY_PER_DAY)+"，请尽快归还！",
-                    entity.getCardNo(), "overdue", entity.getBookId());
+            boolean noticeExists = noticeRepository
+                    .existsByBizTypeAndBizIdAndTargetCardNoAndIsValid("overdue", entity.getBookId(), entity.getCardNo(), "有效");
+            if (!noticeExists) {
+                createNotice("图书超期提醒",
+                        "您好！您借阅的图书《"+entity.getTitle()+"》(编号："+entity.getBookId()+")已超期"+overdueDays+"天，预计罚金¥"+String.format("%.2f",overdueDays * PENALTY_PER_DAY)+"，请尽快归还！",
+                        entity.getCardNo(), "overdue", entity.getBookId());
+            }
         }
         return dtoList;
     }
